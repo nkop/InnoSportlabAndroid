@@ -35,4 +35,14 @@
         android:background="@color/colorPrimary"
         android:textColor="#ffffff"/>
 
+    <Button
+        android:id="@+id/nfcActivityButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:background="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:text="@string/afstandsbediening"/>
+
 </LinearLayout>
