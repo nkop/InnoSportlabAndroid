@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText email;
     private EditText password;
     private Button loginButton;
-
+    private Button afstandsbedieningButton;
     private String emailString;
     private String passwordString;
 
@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
         loginButton = (Button)findViewById(R.id.loginButton);
+        afstandsbedieningButton = (Button) findViewById(R.id.nfcActivityButton);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +49,15 @@ public class MainActivity extends AppCompatActivity {
 
                 AsyncLogin aSyncLogin = new AsyncLogin();
                 aSyncLogin.execute();
+            }
+        });
+
+        afstandsbedieningButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), NFCActivity.class);
+                startActivity(intent);
             }
         });
     }
