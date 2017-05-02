@@ -6,8 +6,7 @@ import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.widget.TextView;
 
-import arrcreations.prototype1_project.AnalyseActivity;
-import arrcreations.prototype1_project.Server.DataServiceAsyncTask;
+
 import nl.in12soa.sperovideo.AnalyseActivity;
 import nl.in12soa.sperovideo.Services.DataServiceAsyncTask;
 

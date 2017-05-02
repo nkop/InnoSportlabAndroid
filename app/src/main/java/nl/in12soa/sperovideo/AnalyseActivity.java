@@ -17,8 +17,6 @@ import android.widget.TextView;
 
 import java.io.IOException;
 
-import arrcreations.prototype1_project.controllers.AnalyseController;
-import arrcreations.prototype1_project.controllers.PaintService;
 import nl.in12soa.sperovideo.Controllers.AnalyseController;
 import nl.in12soa.sperovideo.Services.PaintService;
 

@@ -12,8 +12,6 @@ import android.net.wifi.p2p.WifiP2pManager;
 
 import java.net.InetAddress;
 
-import arrcreations.prototype1_project.CameraActivity;
-import arrcreations.prototype1_project.Client.ClientService;
 import nl.in12soa.sperovideo.CameraActivity;
 import nl.in12soa.sperovideo.Services.ClientService;
 

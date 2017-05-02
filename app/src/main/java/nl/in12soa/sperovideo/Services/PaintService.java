@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 
-import arrcreations.prototype1_project.AnalyseActivity;
 import nl.in12soa.sperovideo.AnalyseActivity;
 
 /**

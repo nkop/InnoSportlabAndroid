@@ -35,4 +35,16 @@
         android:background="@color/colorPrimary"
         android:textColor="#ffffff"/>
 
+    <Button
+        android:text="Analyse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/test_analyse" />
+
+    <Button
+        android:text="Camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/test_cam" />
+
 </LinearLayout>

@@ -8,8 +8,6 @@ import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.widget.TextView;
-
-import arrcreations.prototype1_project.ServerListActivity;
 import nl.in12soa.sperovideo.ServerListActivity;
 
 /**

@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import arrcreations.prototype1_project.AnalyseActivity;
 import nl.in12soa.sperovideo.AnalyseActivity;
 
 /**
