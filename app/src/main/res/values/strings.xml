@@ -1,12 +1,18 @@
 <resources>
     <string name="app_name">SperoVideo</string>
     <string name="afstandsbediening">Afstandsbediening</string>
+    <string name="register_button">Registreren</string>
 
 
-    <!--Register labels-->
-    <string name="email_label">E-mail: </string>
-    <string name="username_label">Gebruikersnaam: </string>
-    <string name="password_label">Wachtwoord: </string>
-    <string name="password_confirm_label">Herhaal wachtwoord: </string>
+    <!--Register strings-->
+    <string name="email_hint">E-mail</string>
+    <string name="username_hint">Gebruikersnaam</string>
+    <string name="password_hint">Wachtwoord</string>
+    <string name="password_confirm_hint">Herhaal wachtwoord</string>
+    <string name="register_title">Registreren</string>
+    <string name="first_name_hint">Voornaam(optioneel)</string>
+    <string name="last_name_hint">Achternaam(optioneel)</string>
+    <string name="city_hint">Stad(optioneel)</string>
+    <string name="nfc_hint">Registreer je nfc tag door deze tegen het apparaat aan te houden(optioneel)</string>
 </resources>
 

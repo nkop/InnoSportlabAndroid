@@ -35,6 +35,14 @@
         <!--android:id="@+id/loginButton"-->
         <!--android:background="@color/colorPrimary"-->
         <!--android:textColor="#ffffff"/>-->
+    <Button
+        android:id="@+id/register_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:text="@string/register_button" />
 
     <Button
         android:text="Analyse"
