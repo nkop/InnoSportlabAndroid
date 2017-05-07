@@ -1,21 +1,23 @@
 package nl.in12soa.sperovideo;
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,6 +34,10 @@ import nl.in12soa.sperovideo.Services.ApiService;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    // NFC stuff
+    private NfcAdapter nfcAdapter;
+
+
     //Instantiate the form fields here
 
     //Required
@@ -44,6 +50,8 @@ public class RegisterActivity extends AppCompatActivity {
     EditText firstNameInput;
     EditText lastNameInput;
     EditText cityInput;
+    TextView nfcText;
+    String nfcId;
 
     //Map to put params in for request
     private Map<String, String> params = new HashMap<>();
@@ -57,6 +65,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
         //Initialize form fields
         emailInput = (EditText) findViewById(R.id.email_input);
         usernameInput = (EditText) findViewById(R.id.username_input);
@@ -65,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
         firstNameInput = (EditText) findViewById(R.id.first_name_input);
         lastNameInput = (EditText) findViewById(R.id.last_name_input);
         cityInput = (EditText) findViewById(R.id.city_input);
+        nfcText = (TextView) findViewById(R.id.registerNfc);
 
     }
 
@@ -119,7 +130,7 @@ public class RegisterActivity extends AppCompatActivity {
         params.put("password", passwordInput.getText().toString());
         params.put("city", cityInput.getText().toString());
         params.put("confirmpassword", passwordConfirmInput.getText().toString());
-        //params.put("rfid", emailInput.getText().toString());
+        params.put("rfid", nfcId);
     }
 
     private boolean formIsValid() {
@@ -161,5 +172,55 @@ public class RegisterActivity extends AppCompatActivity {
             passwordConfirmInput.setError("Wachtwoorden moeten gelijk zijn");
         }
         return false;
+    }
+
+    // nfc Methods
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        enableForegroundDispatchSystem();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        disableForegroundDispatchSystem();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        if (intent.hasExtra(NfcAdapter.EXTRA_ID)) {
+            byte[] serial = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
+            String serialstring = "";
+
+            for (int i = 0; i < serial.length; i++) {
+                String x = Integer.toHexString(((int) serial[i] & 0xff));
+                if (x.length() == 1) {
+                    x = '0' + x;
+                }
+                serialstring += x + ' ';
+            }
+            nfcId = serialstring;
+            nfcText.setText("Uw NFC id is: " + serialstring);
+        }
+    }
+
+    private void enableForegroundDispatchSystem() {
+
+        Intent intent = new Intent(this, RegisterActivity.class).addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        IntentFilter[] intentFilters = new IntentFilter[]{};
+
+        nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, null);
+    }
+
+    private void disableForegroundDispatchSystem() {
+        nfcAdapter.disableForegroundDispatch(this);
     }
 }
