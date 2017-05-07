@@ -2,20 +2,24 @@ package nl.in12soa.sperovideo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -78,12 +82,27 @@ public class RegisterActivity extends AppCompatActivity {
                         public void onResponse(JSONObject response) {
 
                             Toast.makeText(getApplicationContext(), "Register successful", Toast.LENGTH_LONG).show();
+                            params.clear();
                         }
                     }, new Response.ErrorListener() {
 
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), "Registration not successful", Toast.LENGTH_LONG).show();
+                            try{
+                                String parsedData = new String(error.networkResponse.data, "UTF-8");
+                                JSONObject obj = new JSONObject(parsedData);
+                                String message = obj.getString("message");
+                                Log.d("Message", message);
+                                if(message.contains("Username")){
+                                    usernameInput.setError("Gebruikersnaam bestaat al");
+                                }
+                                if(message.contains("Email")){
+                                    emailInput.setError("Email adres bestaat al");
+                                }
+                            }catch (UnsupportedEncodingException | JSONException e) {
+                                e.printStackTrace();
+                            }
+                            //Toast.makeText(getApplicationContext(), "Registration not successful", Toast.LENGTH_LONG).show();
                         }
                     });
             //Add this JSON object request to the requestQueue of the api
@@ -99,18 +118,18 @@ public class RegisterActivity extends AppCompatActivity {
         params.put("lastName", lastNameInput.getText().toString());
         params.put("password", passwordInput.getText().toString());
         params.put("city", cityInput.getText().toString());
+        params.put("confirmpassword", passwordConfirmInput.getText().toString());
         //params.put("rfid", emailInput.getText().toString());
     }
 
     private boolean formIsValid() {
-        if (emailIsValid() && userNameIsValid() && passwordIsValid()) {
-            return true;
-        }
-        return false;
+        //Make sure all fields are valid.
+        return emailIsValid() && userNameIsValid() && passwordIsValid();
     }
 
     //Single field validations
     private boolean emailIsValid() {
+        //Check if the e-mail is valid using regex pattern.
         Pattern pattern = Patterns.EMAIL_ADDRESS;
         if (pattern.matcher(emailInput.getText().toString()).matches()) {
             return true;
@@ -120,6 +139,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean userNameIsValid() {
+        //Minimum length of 1
         if (usernameInput.getText().toString().length() > 0) {
             return true;
         }
@@ -129,6 +149,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean passwordIsValid() {
         //Equal passwords
+        Log.d("Password", passwordInput.getText().toString());
+        Log.d("Password confirm", passwordConfirmInput.getText().toString());
         if (passwordInput.getText().toString().equals(passwordConfirmInput.getText().toString())) {
             //Minimum length of 6
             if (passwordInput.getText().length() >= 6) {
