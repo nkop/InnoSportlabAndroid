@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Button afstandsbedieningButton;
     private Button analyseButton;
     private Button cameraButton;
+    private Button registerButton;
     private Context context;
 //    private Button registerButton;
 //    private String emailString;
@@ -46,7 +47,17 @@ public class MainActivity extends AppCompatActivity {
         analyseButton = (Button) findViewById(R.id.test_analyse);
         cameraButton = (Button) findViewById(R.id.test_cam);
         afstandsbedieningButton = (Button) findViewById(R.id.nfcActivityButton);
+        registerButton = (Button) findViewById(R.id.register_button);
+
         context = this;
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent register = new Intent(context, RegisterActivity.class);
+                startActivity(register);
+            }
+        });
         analyseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
