@@ -130,7 +130,9 @@ public class RegisterActivity extends AppCompatActivity {
         params.put("password", passwordInput.getText().toString());
         params.put("city", cityInput.getText().toString());
         params.put("confirmpassword", passwordConfirmInput.getText().toString());
-        params.put("rfid", nfcId);
+        if(nfcId.length() > 0) {
+            params.put("rfid", nfcId);
+        }
     }
 
     private boolean formIsValid() {

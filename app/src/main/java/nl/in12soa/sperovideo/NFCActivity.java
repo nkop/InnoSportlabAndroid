@@ -17,6 +17,7 @@ public class NFCActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfc);
 
+
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
     }
