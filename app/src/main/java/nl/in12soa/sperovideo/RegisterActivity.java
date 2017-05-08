@@ -88,7 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
                     //POST, URL, PARAMS, RESPONSE LISTENER
                     (Request.Method.POST, validateSignupURL, new JSONObject(params), new Response.Listener<JSONObject>() {
 
-                        //If succesfull
+                        //If successful
                         @Override
                         public void onResponse(JSONObject response) {
 
