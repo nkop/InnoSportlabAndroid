@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
 //    private EditText password;
 //    private Button loginButton;
     private Button afstandsbedieningButton;
-    private Button analyseButton;
-    private Button cameraButton;
+//    private Button analyseButton;
+//    private Button cameraButton;
     private Button registerButton;
     private Context context;
 //    private Button registerButton;
@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
 //        email = (EditText)findViewById(R.id.email);
 //        password = (EditText)findViewById(R.id.password);
 //        loginButton = (Button)findViewById(R.id.loginButton);
-        analyseButton = (Button) findViewById(R.id.test_analyse);
-        cameraButton = (Button) findViewById(R.id.test_cam);
+//        analyseButton = (Button) findViewById(R.id.test_analyse);
+//        cameraButton = (Button) findViewById(R.id.test_cam);
         afstandsbedieningButton = (Button) findViewById(R.id.nfcActivityButton);
         registerButton = (Button) findViewById(R.id.register_button);
 
