@@ -58,20 +58,20 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(register);
             }
         });
-        analyseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent analyse = new Intent(context, AnalyseActivity.class);
-                startActivity(analyse);
-            }
-        });
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent camera = new Intent(context, ServerListActivity.class);
-                startActivity(camera);
-            }
-        });
+//        analyseButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent analyse = new Intent(context, AnalyseActivity.class);
+//                startActivity(analyse);
+//            }
+//        });
+//        cameraButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent camera = new Intent(context, ServerListActivity.class);
+//                startActivity(camera);
+//            }
+//        });
         afstandsbedieningButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
