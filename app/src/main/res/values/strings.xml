@@ -17,5 +17,8 @@
 
     <!--Menu strings-->
     <string name="settings">Instellingen</string>
+
+    <!--Settings strings-->
+    <string name="settings_title">Instellingen</string>
 </resources>
 
