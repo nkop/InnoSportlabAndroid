@@ -163,8 +163,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean passwordIsValid() {
         //Equal passwords
-        Log.d("Password", passwordInput.getText().toString());
-        Log.d("Password confirm", passwordConfirmInput.getText().toString());
         if (passwordInput.getText().toString().equals(passwordConfirmInput.getText().toString())) {
             //Minimum length of 6
             if (passwordInput.getText().length() >= 6) {
