@@ -37,7 +37,6 @@ public class RegisterActivity extends AppCompatActivity {
     // NFC stuff
     private NfcAdapter nfcAdapter;
 
-
     //Instantiate the form fields here
 
     //Required
@@ -51,7 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText lastNameInput;
     EditText cityInput;
     TextView nfcText;
-    String nfcId;
+    String nfcId = "";
 
     //Map to put params in for request
     private Map<String, String> params = new HashMap<>();
@@ -88,7 +87,7 @@ public class RegisterActivity extends AppCompatActivity {
                     //POST, URL, PARAMS, RESPONSE LISTENER
                     (Request.Method.POST, validateSignupURL, new JSONObject(params), new Response.Listener<JSONObject>() {
 
-                        //If succesfull
+                        //If successful
                         @Override
                         public void onResponse(JSONObject response) {
 
@@ -195,34 +194,41 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        if (intent.hasExtra(NfcAdapter.EXTRA_ID)) {
-            byte[] serial = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
-            String serialstring = "";
+        if(nfcAdapter != null && nfcAdapter.isEnabled()) {
+            if (intent.hasExtra(NfcAdapter.EXTRA_ID)) {
+                byte[] serial = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
+                String serialstring = "";
 
-            for (int i = 0; i < serial.length; i++) {
-                String x = Integer.toHexString(((int) serial[i] & 0xff));
-                if (x.length() == 1) {
-                    x = '0' + x;
+                for (int i = 0; i < serial.length; i++) {
+                    String x = Integer.toHexString(((int) serial[i] & 0xff));
+                    if (x.length() == 1) {
+                        x = '0' + x;
+                    }
+                    serialstring += x + ' ';
                 }
-                serialstring += x + ' ';
+                nfcId = serialstring;
+                nfcText.setText("Uw NFC id is: " + serialstring);
             }
-            nfcId = serialstring;
-            nfcText.setText("Uw NFC id is: " + serialstring);
         }
     }
 
     private void enableForegroundDispatchSystem() {
 
-        Intent intent = new Intent(this, RegisterActivity.class).addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
+        if(nfcAdapter != null && nfcAdapter.isEnabled()) {
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            Intent intent = new Intent(this, RegisterActivity.class).addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
 
-        IntentFilter[] intentFilters = new IntentFilter[]{};
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, null);
+            IntentFilter[] intentFilters = new IntentFilter[]{};
+
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, null);
+        }
     }
 
     private void disableForegroundDispatchSystem() {
-        nfcAdapter.disableForegroundDispatch(this);
+        if(nfcAdapter != null && nfcAdapter.isEnabled()) {
+            nfcAdapter.disableForegroundDispatch(this);
+        }
     }
 }
