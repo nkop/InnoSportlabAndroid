@@ -1,5 +1,6 @@
 package nl.in12soa.sperovideo;
 
+import android.support.v7.app.ActionBar;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -48,9 +49,6 @@ public class RegisterActivity extends AppCompatActivity {
     EditText passwordConfirmInput;
 
     //Optional
-    EditText firstNameInput;
-    EditText lastNameInput;
-    EditText cityInput;
     TextView nfcText;
     String nfcId = "";
 
@@ -65,17 +63,14 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle(getResources().getString(R.string.register_title));
         //Initialize form fields
         emailInput = (EditText) findViewById(R.id.email_input);
         usernameInput = (EditText) findViewById(R.id.username_input);
         passwordInput = (EditText) findViewById(R.id.password_input);
         passwordConfirmInput = (EditText) findViewById(R.id.password_confirm_input);
-        firstNameInput = (EditText) findViewById(R.id.first_name_input);
-        lastNameInput = (EditText) findViewById(R.id.last_name_input);
-        cityInput = (EditText) findViewById(R.id.city_input);
         nfcText = (TextView) findViewById(R.id.registerNfc);
 
     }
@@ -126,10 +121,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void createUserObject() {
         params.put("email", emailInput.getText().toString());
         params.put("userName", usernameInput.getText().toString());
-        params.put("firstName", firstNameInput.getText().toString());
-        params.put("lastName", lastNameInput.getText().toString());
         params.put("password", passwordInput.getText().toString());
-        params.put("city", cityInput.getText().toString());
         params.put("confirmpassword", passwordConfirmInput.getText().toString());
         if(nfcId.length() > 0) {
             params.put("rfid", nfcId);

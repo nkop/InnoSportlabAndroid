@@ -3,14 +3,6 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:text="@string/register_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorAccent"
-        android:layout_gravity="center"
-        android:textSize="20dp"
-        android:textStyle="bold"/>
     <EditText
         android:id="@+id/email_input"
         android:inputType="textEmailAddress"
@@ -35,24 +27,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/password_confirm_hint"/>
-    <EditText
-        android:id="@+id/first_name_input"
-        android:inputType="text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/first_name_hint"/>
-    <EditText
-        android:id="@+id/last_name_input"
-        android:inputType="text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/last_name_hint"/>
-    <EditText
-        android:id="@+id/city_input"
-        android:inputType="text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/city_hint"/>
     <TextView
         android:id="@+id/registerNfc"
         android:layout_width="wrap_content"

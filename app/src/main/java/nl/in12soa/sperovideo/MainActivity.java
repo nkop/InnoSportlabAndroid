@@ -23,24 +23,19 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button afstandsbedieningButton;
-//    private Button analyseButton;
-    private Button cameraButton;
-    private Button registerButton;
+
     private Context context;
-//    private Button registerButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        analyseButton = (Button) findViewById(R.id.test_analyse);
-        cameraButton = (Button) findViewById(R.id.test_cam);
-        afstandsbedieningButton = (Button) findViewById(R.id.nfcActivityButton);
-        registerButton = (Button) findViewById(R.id.register_button);
+        Button cameraButton = (Button) findViewById(R.id.test_cam);
+        Button afstandsbedieningButton = (Button) findViewById(R.id.nfcActivityButton);
+        Button registerButton = (Button) findViewById(R.id.register_button);
 
-        context = this;
+        this.context = this;
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,13 +44,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(register);
             }
         });
-//        analyseButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent analyse = new Intent(context, AnalyseActivity.class);
-//                startActivity(analyse);
-//            }
-//        });
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,12 +61,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
 
 }
