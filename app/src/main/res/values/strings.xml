@@ -2,7 +2,7 @@
     <string name="app_name">SperoVideo</string>
     <string name="afstandsbediening">Afstandsbediening</string>
     <string name="register_button">Registreren</string>
-
+    <string name="scan_chip_or_manual">Scan chip of start manueel</string>
 
     <!--Register strings-->
     <string name="email_hint">E-mail</string>
