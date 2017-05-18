@@ -1,7 +1,10 @@
 <resources>
+    <!--MainActivity strings-->
     <string name="app_name">SperoVideo</string>
-    <string name="afstandsbediening">Afstandsbediening</string>
+    <string name="remote_control">Afstandsbediening</string>
     <string name="register_button">Registreren</string>
+    <string name="analyse_button">Analyse</string>
+    <string name="camera_button">Camera</string>
 
 
     <!--Register strings-->
@@ -20,5 +23,8 @@
 
     <!--Settings strings-->
     <string name="settings_title">Instellingen</string>
+
+    <!--Analyse strings-->
+    <string name="analyse_title">Analyse</string>
 </resources>
 

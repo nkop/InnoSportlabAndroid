@@ -18,10 +18,10 @@
         android:text="@string/register_button" />
 
     <Button
-        android:text="Analyse"
+        android:text="@string/analyse_button"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:id="@+id/test_analyse"
+        android:id="@+id/analyse_button"
         android:background="@color/colorPrimary"
         android:textColor="@color/colorAccent"
         android:layout_gravity="center_horizontal"
@@ -29,7 +29,7 @@
         />
 
     <Button
-        android:text="Camera"
+        android:text="@string/camera_button"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:id="@+id/test_cam"
@@ -46,7 +46,7 @@
         android:layout_gravity="center_horizontal"
         android:background="@color/colorPrimary"
         android:textColor="@color/colorAccent"
-        android:text="@string/afstandsbediening"
+        android:text="@string/remote_control"
         android:layout_marginTop="50dp"/>
 
 </LinearLayout>

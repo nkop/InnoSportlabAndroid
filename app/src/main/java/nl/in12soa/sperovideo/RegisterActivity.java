@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import nl.in12soa.sperovideo.Services.ActionBarService;
 import nl.in12soa.sperovideo.Services.ApiService;
 
 /**
@@ -43,14 +44,14 @@ public class RegisterActivity extends AppCompatActivity {
     //Instantiate the form fields here
 
     //Required
-    EditText emailInput;
-    EditText usernameInput;
-    EditText passwordInput;
-    EditText passwordConfirmInput;
+    private EditText emailInput;
+    private EditText usernameInput;
+    private EditText passwordInput;
+    private EditText passwordConfirmInput;
 
     //Optional
-    TextView nfcText;
-    String nfcId = "";
+    private TextView nfcText;
+    private String nfcId = "";
 
     //Map to put params in for request
     private Map<String, String> params = new HashMap<>();
@@ -64,8 +65,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        ActionBar ab = getSupportActionBar();
-        ab.setTitle(getResources().getString(R.string.register_title));
+        ActionBarService.setActionBarTitle(R.string.register_title);
+
         //Initialize form fields
         emailInput = (EditText) findViewById(R.id.email_input);
         usernameInput = (EditText) findViewById(R.id.username_input);
@@ -83,16 +84,13 @@ public class RegisterActivity extends AppCompatActivity {
             JsonObjectRequest jsObjRequest = new JsonObjectRequest
                     //POST, URL, PARAMS, RESPONSE LISTENER
                     (Request.Method.POST, validateSignupURL, new JSONObject(params), new Response.Listener<JSONObject>() {
-
                         //If successful
                         @Override
                         public void onResponse(JSONObject response) {
-
                             Toast.makeText(getApplicationContext(), "Register successful", Toast.LENGTH_LONG).show();
                             params.clear();
                         }
                     }, new Response.ErrorListener() {
-
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             try{

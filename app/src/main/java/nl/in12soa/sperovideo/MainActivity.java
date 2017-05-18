@@ -32,8 +32,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button cameraButton = (Button) findViewById(R.id.test_cam);
-        Button afstandsbedieningButton = (Button) findViewById(R.id.nfcActivityButton);
+        Button remoteButton = (Button) findViewById(R.id.nfcActivityButton);
         Button registerButton = (Button) findViewById(R.id.register_button);
+        Button analyseButton = (Button) findViewById(R.id.analyse_button);
 
         this.context = this;
 
@@ -51,11 +52,20 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        afstandsbedieningButton.setOnClickListener(new View.OnClickListener() {
+        remoteButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), NFCActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        analyseButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(getApplicationContext(), AnalyseActivity.class);
                 startActivity(intent);
             }
         });
