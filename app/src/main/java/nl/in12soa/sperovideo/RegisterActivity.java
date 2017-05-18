@@ -65,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        ActionBarService.setActionBarTitle(R.string.register_title);
+        ActionBarService.setActionBarTitle(R.string.register_title, getSupportActionBar());
 
         //Initialize form fields
         emailInput = (EditText) findViewById(R.id.email_input);

@@ -9,7 +9,7 @@ import android.support.v7.app.ActionBar;
 
 public class ActionBarService {
 
-    public static void setActionBarTitle(int title){
-        ActionBar ab = getSupportActionBar();
+    public static void setActionBarTitle(int title, ActionBar actionBar){
+        actionBar.setTitle(title);
     }
 }
