@@ -14,5 +14,11 @@
     <string name="last_name_hint">Achternaam(optioneel)</string>
     <string name="city_hint">Stad(optioneel)</string>
     <string name="nfc_hint">Registreer je nfc tag door deze tegen het apparaat aan te houden(optioneel)</string>
+
+    <!--Menu strings-->
+    <string name="settings">Instellingen</string>
+
+    <!--Settings strings-->
+    <string name="settings_title">Instellingen</string>
 </resources>
 
