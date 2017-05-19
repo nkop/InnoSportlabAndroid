@@ -61,7 +61,7 @@ public class AnalyseService extends BroadcastReceiver {
             @Override
             public void onSuccess() {
                 isconnected = true;
-                System.out.println("Connected to device");
+//                System.out.println("Connected to device");
             }
 
             @Override
@@ -77,10 +77,10 @@ public class AnalyseService extends BroadcastReceiver {
 
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
             // Check to see if Wi-Fi is enabled and notify appropriate activity
-            System.out.println(action);
+//            System.out.println(action);
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
             // Call WifiP2pManager.requestPeers() to get a list of current peers
-            System.out.println(action);
+//            System.out.println(action);
             if (mManager != null) {
                 mManager.requestPeers(mChannel, mPeerHandler);
                 discoverService();
@@ -90,10 +90,10 @@ public class AnalyseService extends BroadcastReceiver {
             if(isconnected) {
                 mManager.requestConnectionInfo(mChannel, mActivity);
             }
-            System.out.println(action);
+//            System.out.println(action);
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             // Respond to this device's wifi state changing
-            System.out.println(action);
+//            System.out.println(action);
         }
     }
 
@@ -103,7 +103,7 @@ public class AnalyseService extends BroadcastReceiver {
             @Override
             public void onDnsSdTxtRecordAvailable(
                     String fullDomain, Map record, WifiP2pDevice device) {
-                System.out.println("DnsSdTxtRecord available -" + record.toString());
+//                System.out.println("DnsSdTxtRecord available -" + record.toString());
                 cameraServices.put(device.deviceAddress + "_id", record.get("service_id").toString());
                 cameraServices.put(device.deviceAddress + "_type", record.get("service_type").toString());
             }
@@ -121,7 +121,7 @@ public class AnalyseService extends BroadcastReceiver {
                 String type = cameraServices
                         .containsKey(resourceType.deviceAddress + "_type") ? cameraServices
                         .get(resourceType.deviceAddress + "_type") : resourceType.deviceName;
-                System.out.println(resourceType.deviceName);
+//                System.out.println(resourceType.deviceName);
                 final Peer peer = new Peer(resourceType, type);
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
@@ -139,7 +139,8 @@ public class AnalyseService extends BroadcastReceiver {
                 new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
-                        System.out.println("Service request added");
+                        //service request added
+//                        System.out.println("Service request added");
                     }
 
                     @Override
@@ -154,7 +155,8 @@ public class AnalyseService extends BroadcastReceiver {
 
             @Override
             public void onSuccess() {
-                System.out.println("Service discovery succesfull");
+                //service discovery succesfull
+//                System.out.println("Service discovery succesfull");
             }
 
             @Override

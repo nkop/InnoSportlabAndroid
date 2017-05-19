@@ -26,6 +26,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText email;
     private EditText password;
 
+    private String id;
+
     private Map<String, String> params = new HashMap<>();
 
     public static String loginURL = "http://innosportlab.herokuapp.com/users/validate";
@@ -51,7 +53,17 @@ public class LoginActivity extends AppCompatActivity {
                         //If succesfull
                         @Override
                         public void onResponse(JSONObject response) {
-                            Toast.makeText(getApplicationContext(), "Login succesful", Toast.LENGTH_LONG).show();
+                            try{
+                                id = response.getString("_id");
+                            }
+                            catch(Exception e)
+                            {
+                                Toast.makeText(getApplicationContext(), "Ophalen gegevens mislukt", Toast.LENGTH_LONG).show();
+                                e.printStackTrace();
+                            }
+                            Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
+                            intent.putExtra("userID", id);
+                            startActivity(intent);
                             params.clear();
                             startActivity(intent);
                         }
@@ -62,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                                 String parsedData = new String(error.networkResponse.data, "UTF-8");
                                 JSONObject obj = new JSONObject(parsedData);
                                 String message = obj.getString("message");
-                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                                Log.d("Error", message);
                             } catch (UnsupportedEncodingException | JSONException e) {
                                 e.printStackTrace();
                             }

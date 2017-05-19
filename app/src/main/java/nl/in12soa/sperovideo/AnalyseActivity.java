@@ -2,13 +2,19 @@ package nl.in12soa.sperovideo;
 
 import android.content.Context;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
+
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import nl.in12soa.sperovideo.Models.Peer;
@@ -24,6 +30,10 @@ public class AnalyseActivity extends AppCompatActivity implements WifiP2pManager
     LinearLayoutManager mLinearLayoutManager;
     RecyclerView rv_peerlist;
     ClientService clientService;
+
+    public SurfaceView vw1;
+    public SurfaceHolder vw1_holder;
+    private MediaPlayer mp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +41,9 @@ public class AnalyseActivity extends AppCompatActivity implements WifiP2pManager
         pla = new PeerListAdapter(new ArrayList<Peer>(), this);
         setReceiver();
         setListeners();
+
+        vw1 = (SurfaceView)findViewById(R.id.surfaceView);
+        vw1_holder = vw1.getHolder();
         rv_peerlist = (RecyclerView)findViewById(R.id.rv_peerlist);
         mLinearLayoutManager = new LinearLayoutManager(this);
         rv_peerlist.setLayoutManager(mLinearLayoutManager);
@@ -61,16 +74,29 @@ public class AnalyseActivity extends AppCompatActivity implements WifiP2pManager
     @Override
     public void onConnectionInfoAvailable(WifiP2pInfo info) {
         InetAddress inetAddress = info.groupOwnerAddress;
-        ClientService.setHost(inetAddress.getHostAddress());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(inetAddress != null) {
+            ClientService.setHost(inetAddress.getHostAddress());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : 30, \"resolution_y\" : 640, \"resolution_x\" : 480, \"duration\" : 5000 } }");
         }
-        clientService.sendData("command_start_camera");
     }
 
+    public void playVideo(Uri videoPath){
+        try {
+            mp = new MediaPlayer();
+            mp.setDataSource(getApplicationContext(), videoPath);
+            mp.prepare();
+            mp.setDisplay(vw1_holder);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mp.start();
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -83,3 +109,4 @@ public class AnalyseActivity extends AppCompatActivity implements WifiP2pManager
         unregisterReceiver(mReceiver);
     }
 }
+

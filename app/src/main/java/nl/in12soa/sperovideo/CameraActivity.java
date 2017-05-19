@@ -56,6 +56,5 @@ public class CameraActivity extends AppCompatActivity implements WifiP2pManager.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
-
     }
 }
