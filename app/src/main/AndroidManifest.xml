@@ -41,10 +41,13 @@
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
             </intent-filter>
         </activity>
-        <activity android:name=".NFCActivity">
+        <activity android:name=".RemoteActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
             </intent-filter>
+        </activity>
+        <activity android:name=".AnalyseActivity">
+
         </activity>
         <activity android:name=".LoginActivity"></activity>
     </application>

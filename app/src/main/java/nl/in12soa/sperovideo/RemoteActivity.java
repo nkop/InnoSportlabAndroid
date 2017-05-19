@@ -3,23 +3,35 @@ package nl.in12soa.sperovideo;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.wifi.p2p.WifiP2pInfo;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.nfc.NfcAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
-public class NFCActivity extends AppCompatActivity {
+import java.net.InetAddress;
+import java.util.ArrayList;
+
+import nl.in12soa.sperovideo.Models.Peer;
+import nl.in12soa.sperovideo.Services.AnalyseService;
+import nl.in12soa.sperovideo.Services.ClientService;
+
+public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.ConnectionInfoListener{
 
     private NfcAdapter nfcAdapter;
+
+    ClientService clientService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfc);
-
-
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
+        clientService = new ClientService(this);
     }
 
     @Override
@@ -51,14 +63,13 @@ public class NFCActivity extends AppCompatActivity {
                 }
                 serialstring += x + ' ';
             }
-            TextView textView = (TextView) findViewById(R.id.nfcText);
-            textView.setText(serialstring);
+            clientService.sendData("command_start_camera");
         }
     }
 
     private void enableForegroundDispatchSystem() {
 
-        Intent intent = new Intent(this, NFCActivity.class).addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
+        Intent intent = new Intent(this, RemoteActivity.class).addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -69,5 +80,17 @@ public class NFCActivity extends AppCompatActivity {
 
     private void disableForegroundDispatchSystem() {
         nfcAdapter.disableForegroundDispatch(this);
+    }
+
+    @Override
+    public void onConnectionInfoAvailable(WifiP2pInfo info) {
+        InetAddress inetAddress = info.groupOwnerAddress;
+        ClientService.setHost(inetAddress.getHostAddress());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 }
