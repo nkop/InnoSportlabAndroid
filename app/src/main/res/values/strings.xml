@@ -3,9 +3,13 @@
     <string name="app_name">SperoVideo</string>
     <string name="remote_control">Afstandsbediening</string>
     <string name="register_button">Registreren</string>
+<<<<<<< HEAD
     <string name="analyse_button">Analyse</string>
     <string name="camera_button">Camera</string>
 
+=======
+    <string name="scan_chip_or_manual">Scan chip of start manueel</string>
+>>>>>>> cd210812e8c365bebe39adbdf6ca7d7dee7c7809
 
     <!--Register strings-->
     <string name="email_hint">E-mail</string>

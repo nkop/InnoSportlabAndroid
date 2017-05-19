@@ -2,24 +2,11 @@ package nl.in12soa.sperovideo;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +32,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(register);
             }
         });
+<<<<<<< HEAD
+=======
+        (findViewById(R.id.test_analyse)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent analyse = new Intent(context, AnalyseActivity.class);
+                startActivity(analyse);
+            }
+        });
+>>>>>>> cd210812e8c365bebe39adbdf6ca7d7dee7c7809
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
