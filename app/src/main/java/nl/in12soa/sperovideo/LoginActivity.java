@@ -3,6 +3,7 @@ package nl.in12soa.sperovideo;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -20,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nl.in12soa.sperovideo.Services.ApiService;
+
+import static android.content.Intent.FLAG_ACTIVITY_NO_HISTORY;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -62,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             intent.putExtra("userID", id);
                             startActivity(intent);
                             params.clear();
