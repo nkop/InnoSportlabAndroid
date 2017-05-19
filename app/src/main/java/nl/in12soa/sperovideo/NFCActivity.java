@@ -17,6 +17,7 @@ public class NFCActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfc);
 
+
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
     }
@@ -57,7 +58,7 @@ public class NFCActivity extends AppCompatActivity {
 
     private void enableForegroundDispatchSystem() {
 
-        Intent intent = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
+        Intent intent = new Intent(this, NFCActivity.class).addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 

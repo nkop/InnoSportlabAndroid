@@ -18,7 +18,6 @@
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="true" />
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -36,16 +35,19 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
+        </activity>
+        <activity android:name=".RegisterActivity">
+            <intent-filter>
+                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+            </intent-filter>
         </activity>
         <activity android:name=".NFCActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
             </intent-filter>
         </activity>
-        <activity android:name=".AnalyseActivity" />
-        <activity android:name=".CameraActivity" />
-        <activity android:name=".ServerListActivity"></activity>
+        <activity android:name=".LoginActivity"/>
+        <activity android:name=".SettingsActivity"/>
     </application>
 
 </manifest>
