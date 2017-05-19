@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         Button cameraButton = (Button) findViewById(R.id.test_cam);
         Button remoteButton = (Button) findViewById(R.id.nfcActivityButton);
         Button registerButton = (Button) findViewById(R.id.register_button);
-        Button analyseButton = (Button) findViewById(R.id.analyse_button);
+        Button analyseButton = (Button) findViewById(R.id.test_analyse);
 
         this.context = this;
 
@@ -32,8 +32,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(register);
             }
         });
-<<<<<<< HEAD
-=======
+
         (findViewById(R.id.test_analyse)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(analyse);
             }
         });
->>>>>>> cd210812e8c365bebe39adbdf6ca7d7dee7c7809
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
