@@ -11,7 +11,7 @@
         android:text="Uitloggen"
         android:layout_marginTop="20dp"
         android:background="@color/colorPrimary"
-        android:textColor="#ffffff"
+        android:textColor="@color/colorAccent"
         android:id="@+id/logoutButton"/>
 
 </LinearLayout>
