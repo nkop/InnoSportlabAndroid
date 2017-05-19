@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -37,7 +39,6 @@ public class RegisterActivity extends AppCompatActivity {
     // NFC stuff
     private NfcAdapter nfcAdapter;
 
-
     //Instantiate the form fields here
 
     //Required
@@ -51,7 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText lastNameInput;
     EditText cityInput;
     TextView nfcText;
-    String nfcId;
+    String nfcId = "";
 
     //Map to put params in for request
     private Map<String, String> params = new HashMap<>();
@@ -162,8 +163,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean passwordIsValid() {
         //Equal passwords
-        Log.d("Password", passwordInput.getText().toString());
-        Log.d("Password confirm", passwordConfirmInput.getText().toString());
         if (passwordInput.getText().toString().equals(passwordConfirmInput.getText().toString())) {
             //Minimum length of 6
             if (passwordInput.getText().length() >= 6) {
@@ -195,34 +194,57 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        if (intent.hasExtra(NfcAdapter.EXTRA_ID)) {
-            byte[] serial = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
-            String serialstring = "";
+        if(nfcAdapter != null && nfcAdapter.isEnabled()) {
+            if (intent.hasExtra(NfcAdapter.EXTRA_ID)) {
+                byte[] serial = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
+                String serialstring = "";
 
-            for (int i = 0; i < serial.length; i++) {
-                String x = Integer.toHexString(((int) serial[i] & 0xff));
-                if (x.length() == 1) {
-                    x = '0' + x;
+                for (int i = 0; i < serial.length; i++) {
+                    String x = Integer.toHexString(((int) serial[i] & 0xff));
+                    if (x.length() == 1) {
+                        x = '0' + x;
+                    }
+                    serialstring += x + ' ';
                 }
-                serialstring += x + ' ';
+                nfcId = serialstring;
+                nfcText.setText("Uw NFC id is: " + serialstring);
             }
-            nfcId = serialstring;
-            nfcText.setText("Uw NFC id is: " + serialstring);
         }
     }
 
     private void enableForegroundDispatchSystem() {
 
-        Intent intent = new Intent(this, RegisterActivity.class).addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
+        if(nfcAdapter != null && nfcAdapter.isEnabled()) {
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            Intent intent = new Intent(this, RegisterActivity.class).addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
 
-        IntentFilter[] intentFilters = new IntentFilter[]{};
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, null);
+            IntentFilter[] intentFilters = new IntentFilter[]{};
+
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, null);
+        }
     }
 
     private void disableForegroundDispatchSystem() {
-        nfcAdapter.disableForegroundDispatch(this);
+        if(nfcAdapter != null && nfcAdapter.isEnabled()) {
+            nfcAdapter.disableForegroundDispatch(this);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
+        case R.id.about:
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
+            return(true);
+    }
+        return(super.onOptionsItemSelected(item));
     }
 }
