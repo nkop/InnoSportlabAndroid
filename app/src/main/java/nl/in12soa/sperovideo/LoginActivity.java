@@ -3,9 +3,7 @@ package nl.in12soa.sperovideo;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -45,11 +43,11 @@ public class LoginActivity extends AppCompatActivity {
 
     public void doLogin(View v)
     {
-        if(email.getText().toString() != "" && password.getText().toString() != "")
+        if(email.getText().toString().length() != 0 && password.getText().toString().length() != 0)
         {
             params.put("email", email.getText().toString());
             params.put("password", password.getText().toString());
-
+            final Intent intent = new Intent(this, CameraActivity.class);
             JsonObjectRequest jsObjRequest = new JsonObjectRequest
                     (Request.Method.POST, loginURL, new JSONObject(params), new Response.Listener<JSONObject>() {
                         //If succesfull
@@ -67,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                             intent.putExtra("userID", id);
                             startActivity(intent);
                             params.clear();
+                            startActivity(intent);
                         }
                     }, new Response.ErrorListener() {
                         @Override
