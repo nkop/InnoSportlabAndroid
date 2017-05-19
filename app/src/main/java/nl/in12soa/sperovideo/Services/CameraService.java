@@ -17,10 +17,9 @@ public class CameraService extends BroadcastReceiver {
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
     private CameraActivity mActivity;
-    private DataService dataService;
-    public static File videFile;
+    public ServerService dataService;
     public CameraService(WifiP2pManager manager, WifiP2pManager.Channel channel,
-                             CameraActivity activity) {
+                         CameraActivity activity) {
         super();
         this.mManager = manager;
         this.mChannel = channel;
@@ -46,7 +45,6 @@ public class CameraService extends BroadcastReceiver {
         String action = intent.getAction();
 
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
-            cleangroup();
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
             if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
                 mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
@@ -54,7 +52,7 @@ public class CameraService extends BroadcastReceiver {
                     public void onSuccess() {
                         System.out.println("Group Creation succesfull");
                         startRegistration();
-                        dataService = new DataService(mActivity);
+                        dataService = new ServerService(mActivity);
                         dataService.execute();
                     }
 
