@@ -17,10 +17,10 @@ import nl.in12soa.sperovideo.Models.Peer;
 public class PeerListAdapter extends RecyclerView.Adapter<PeerListAdapter.PeerViewHolder> {
 
     private List<Peer> peerList;
-    private AnalyseActivity analyseActivity;
-    public PeerListAdapter(List<Peer> peerList, AnalyseActivity analyseActivity) {
+    private RemoteActivity remoteActivity;
+    public PeerListAdapter(List<Peer> peerList, RemoteActivity remoteActivity) {
         this.peerList = peerList;
-        this.analyseActivity = analyseActivity;
+        this.remoteActivity = remoteActivity;
     }
 
     public void addItem(Peer peer){
@@ -61,7 +61,7 @@ public class PeerListAdapter extends RecyclerView.Adapter<PeerListAdapter.PeerVi
             @Override
             public void onClick(View v) {
                 Peer peer = peerList.get(index);
-                analyseActivity.mReceiver.connect(peer.getDevice());
+                remoteActivity.mReceiver.connect(peer.getDevice());
             }
         });
         return new PeerViewHolder(itemView);

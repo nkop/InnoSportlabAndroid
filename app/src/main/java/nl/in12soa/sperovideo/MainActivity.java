@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
@@ -39,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         (findViewById(R.id.test_analyse)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent analyse = new Intent(context, AnalyseActivity.class);
+                Intent analyse = new Intent(context, LoginActivity.class);
                 startActivity(analyse);
             }
         });
