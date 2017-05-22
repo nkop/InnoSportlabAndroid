@@ -10,44 +10,36 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    private Context context;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button cameraButton = (Button) findViewById(R.id.test_cam);
-        Button remoteButton = (Button) findViewById(R.id.nfcActivityButton);
-        Button registerButton = (Button) findViewById(R.id.register_button);
-        Button analyseButton = (Button) findViewById(R.id.test_analyse);
-
-        this.context = this;
-
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        (findViewById(R.id.register_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent register = new Intent(context, RegisterActivity.class);
+                Intent register = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(register);
             }
         });
 
-        (findViewById(R.id.test_analyse)).setOnClickListener(new View.OnClickListener() {
+        (findViewById(R.id.analyse_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent analyse = new Intent(context, AnalyseActivity.class);
+                Intent analyse = new Intent(getApplicationContext(), AnalyseActivity.class);
                 startActivity(analyse);
             }
         });
-        cameraButton.setOnClickListener(new View.OnClickListener() {
+
+        (findViewById(R.id.camera_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }
         });
-        remoteButton.setOnClickListener(new View.OnClickListener() {
+
+        (findViewById(R.id.remote_button)).setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -55,16 +47,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        analyseButton.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(getApplicationContext(), AnalyseActivity.class);
-                startActivity(intent);
-            }
-        });
-
     }
 
 }

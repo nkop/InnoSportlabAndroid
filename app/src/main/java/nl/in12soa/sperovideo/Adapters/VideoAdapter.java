@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import nl.in12soa.sperovideo.Model.Video;
+import nl.in12soa.sperovideo.Models.Video;
 import nl.in12soa.sperovideo.R;
 
 /**
@@ -18,8 +18,9 @@ import nl.in12soa.sperovideo.R;
 
 public class VideoAdapter extends ArrayAdapter<Video> {
 
-    Context mContext;
-    ArrayList<Video> videoList;
+    private Context mContext;
+    //Wouter check dit even, wordt wel ge-assigned maar niet gebruikt.
+    private ArrayList<Video> videoList;
 
     public VideoAdapter(Context context, ArrayList<Video> videoList){
         super(context, 0, videoList);
@@ -33,11 +34,11 @@ public class VideoAdapter extends ArrayAdapter<Video> {
         Video video = getItem(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.overview_list_item, parent, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.overview_list_item, parent, false);
         }
 
         String dateString = video.date.substring(0, 10);
-        TextView videoText = (TextView) convertView.findViewById(R.id.videoItem);
+        TextView videoText = (TextView) convertView.findViewById(R.id.video_item);
         videoText.setText((position + 1) + " - Video van " + dateString);
 
         return convertView;

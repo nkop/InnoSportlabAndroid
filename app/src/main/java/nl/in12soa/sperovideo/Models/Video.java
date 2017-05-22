@@ -1,4 +1,4 @@
-package nl.in12soa.sperovideo.Model;
+package nl.in12soa.sperovideo.Models;
 
 import java.util.Date;
 

@@ -40,8 +40,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        email = (EditText)findViewById(R.id.email);
-        password = (EditText)findViewById(R.id.password);
+        this.email = (EditText)findViewById(R.id.email_input_login);
+        this.password = (EditText)findViewById(R.id.password_input_login);
     }
 
     public void doLogin(View v)
@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             catch(Exception e)
                             {
-                                Toast.makeText(getApplicationContext(), "Ophalen gegevens mislukt", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Ophalen gegevens mislukt. Probeer het later opnieuw", Toast.LENGTH_LONG).show();
                                 e.printStackTrace();
                             }
                             Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         else
         {
-            Toast.makeText(getApplicationContext(), "Username and password can't be empty", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Vul een e-mail en een wachtwoord in", Toast.LENGTH_LONG).show();
         }
     }
 }

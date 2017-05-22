@@ -34,6 +34,7 @@ public class Peer {
         this.type = type;
     }
 
+    //Never used method, Ahmad?!😠😠😠😠😠
     public void setDevice(WifiP2pDevice device) {
         this.device = device;
     }

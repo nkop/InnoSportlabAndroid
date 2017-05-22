@@ -13,5 +13,5 @@
     <VideoView
         android:layout_width="352px"
         android:layout_height="288px"
-        android:id="@+id/sv_camerapreview" />
+        android:id="@+id/camera_preview" />
 </FrameLayout>

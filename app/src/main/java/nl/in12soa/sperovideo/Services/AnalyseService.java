@@ -19,14 +19,13 @@ import nl.in12soa.sperovideo.PeerListAdapter;
 
 
 public class AnalyseService extends BroadcastReceiver {
-    WifiP2pDnsSdServiceRequest serviceRequest;
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
     public PeerListHandler mPeerHandler;
     public PeerListAdapter pla;
     private boolean isconnected = false;
     AnalyseActivity mActivity;
-    final HashMap<String, String> cameraServices = new HashMap<String, String>();
+    final HashMap<String, String> cameraServices = new HashMap<>();
     public AnalyseService(AnalyseActivity act, WifiP2pManager.Channel channelp, WifiP2pManager mgrp, PeerListAdapter plap){
         super();
         mActivity = act;
@@ -34,14 +33,13 @@ public class AnalyseService extends BroadcastReceiver {
         mChannel = channelp;
         pla = plap;
         mPeerHandler = new PeerListHandler();
-
     }
 
     public void peerDiscovery(){
         mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                System.out.println("Peer discovery succesfull");
+                System.out.println("Peer discovery successful");
 
             }
 
@@ -133,7 +131,7 @@ public class AnalyseService extends BroadcastReceiver {
         };
 
         mManager.setDnsSdResponseListeners(mChannel, servListener, txtListener);
-        serviceRequest = WifiP2pDnsSdServiceRequest.newInstance();
+        WifiP2pDnsSdServiceRequest serviceRequest = WifiP2pDnsSdServiceRequest.newInstance();
         mManager.addServiceRequest(mChannel,
                 serviceRequest,
                 new WifiP2pManager.ActionListener() {
