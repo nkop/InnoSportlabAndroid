@@ -46,6 +46,7 @@
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
             </intent-filter>
         </activity>
+        <activity android:name=".AnalyseActivity"/>
         <activity android:name=".LoginActivity"></activity>
     </application>
 

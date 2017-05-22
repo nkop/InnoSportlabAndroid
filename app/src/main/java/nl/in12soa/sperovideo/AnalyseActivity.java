@@ -67,6 +67,7 @@ public class AnalyseActivity extends AppCompatActivity implements WifiP2pManager
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        //TODO: create a button
         clientService.sendData("command_start_camera");
     }
 
