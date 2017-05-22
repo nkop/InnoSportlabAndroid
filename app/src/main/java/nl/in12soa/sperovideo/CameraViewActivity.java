@@ -16,12 +16,13 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
-import nl.in12soa.sperovideo.Observers.VideoFileObserver;
+import nl.in12soa.sperovideo.Services.ServerService;
 
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
-public class CameraViewActivity extends AppCompatActivity implements SurfaceHolder.Callback{
+public class CameraViewActivity extends AppCompatActivity implements SurfaceHolder.Callback, MediaRecorder.OnInfoListener{
 
     boolean isRecording = false;
     public MediaRecorder mMediarecorder;
@@ -29,6 +30,7 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
     public Camera camera;
     public static String newvideopath;
     SurfaceHolder mHolder;
+    HashMap<String, Integer> videoSettings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +38,12 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         vw1 = (VideoView) findViewById(R.id.sv_camerapreview);
         mHolder = vw1.getHolder();
         mHolder.addCallback(this);
+        videoSettings = new HashMap<>();
+        Bundle extras = getIntent().getExtras();
+        videoSettings.put("resolution_y", extras.getInt("resultion_y"));
+        videoSettings.put("resolution_x", extras.getInt("resultion_x"));
+        videoSettings.put("framerate", extras.getInt("framerate"));
+        videoSettings.put("duration", extras.getInt("duration"));
     }
 
 
@@ -45,7 +53,6 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
             mMediarecorder.stop();  // stop the recording
             mMediarecorder.release(); // release the MediaRecorder object
             camera.lock();         // take camera access back from MediaRecorder
-
             // inform the user that recording has stopped
             Uri videouri = Uri.fromFile(new File(newvideopath));
 
@@ -57,8 +64,6 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
             if (newvideopath != null) {
                 // Camera is available and unlocked, MediaRecorder is prepared,
                 // now you can start recording
-                VideoFileObserver videoFileObserver = new VideoFileObserver(newvideopath, this);
-                videoFileObserver.startWatching();
                 mMediarecorder.start();
 
                 isRecording = true;
@@ -78,11 +83,15 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         // Step 1: Unlock and set camera to MediaRecorder
         camera.unlock();
         mMediarecorder.setCamera(camera);
-        mMediarecorder.setMaxDuration(10000);
+        mMediarecorder.setMaxDuration(videoSettings.get("duration"));
+        mMediarecorder.setOnInfoListener(this);
         // Step 2: Set sources
         mMediarecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
         mMediarecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-
+//        mMediarecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+//        mMediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+//        mMediarecorder.setVideoFrameRate(videoSettings.get("framerate"));
+//        mMediarecorder.setVideoSize(videoSettings.get("resolution_y"),videoSettings.get("resolution_x"));
         // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
         mMediarecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
 
@@ -108,7 +117,7 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         return filepath;
     }
 
-    private static File getOutputMediaFile(int type){
+    private File getOutputMediaFile(int type){
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
 
@@ -175,6 +184,20 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         } else {
             // no camera on this device
             return false;
+        }
+    }
+
+    @Override
+    public void onInfo(MediaRecorder mr, int what, int extra) {
+        if(what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED){
+            mMediarecorder.stop();
+            mMediarecorder.release();
+            System.out.println(MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED);
+            System.out.println(extra);
+            System.out.println("Camera is done");
+            ServerService.VIDEOURI = Uri.fromFile(new File(newvideopath));
+            setResult(5);
+            finish();
         }
     }
 }

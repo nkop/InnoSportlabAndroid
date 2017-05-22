@@ -3,6 +3,7 @@ package nl.in12soa.sperovideo;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -21,10 +22,14 @@ import java.util.Map;
 
 import nl.in12soa.sperovideo.Services.ApiService;
 
+import static android.content.Intent.FLAG_ACTIVITY_NO_HISTORY;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText email;
     private EditText password;
+
+    private String id;
 
     private Map<String, String> params = new HashMap<>();
 
@@ -51,7 +56,18 @@ public class LoginActivity extends AppCompatActivity {
                         //If succesfull
                         @Override
                         public void onResponse(JSONObject response) {
-                            Toast.makeText(getApplicationContext(), "Login succesful", Toast.LENGTH_LONG).show();
+                            try{
+                                id = response.getString("_id");
+                            }
+                            catch(Exception e)
+                            {
+                                Toast.makeText(getApplicationContext(), "Ophalen gegevens mislukt", Toast.LENGTH_LONG).show();
+                                e.printStackTrace();
+                            }
+                            Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            intent.putExtra("userID", id);
+                            startActivity(intent);
                             params.clear();
                             startActivity(intent);
                         }
@@ -62,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                                 String parsedData = new String(error.networkResponse.data, "UTF-8");
                                 JSONObject obj = new JSONObject(parsedData);
                                 String message = obj.getString("message");
-                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                                Log.d("Error", message);
                             } catch (UnsupportedEncodingException | JSONException e) {
                                 e.printStackTrace();
                             }

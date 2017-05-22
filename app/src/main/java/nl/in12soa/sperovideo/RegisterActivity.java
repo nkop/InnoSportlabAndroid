@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -161,8 +163,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean passwordIsValid() {
         //Equal passwords
-        Log.d("Password", passwordInput.getText().toString());
-        Log.d("Password confirm", passwordConfirmInput.getText().toString());
         if (passwordInput.getText().toString().equals(passwordConfirmInput.getText().toString())) {
             //Minimum length of 6
             if (passwordInput.getText().length() >= 6) {
@@ -230,5 +230,21 @@ public class RegisterActivity extends AppCompatActivity {
         if(nfcAdapter != null && nfcAdapter.isEnabled()) {
             nfcAdapter.disableForegroundDispatch(this);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
+        case R.id.about:
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
+            return(true);
+    }
+        return(super.onOptionsItemSelected(item));
     }
 }
