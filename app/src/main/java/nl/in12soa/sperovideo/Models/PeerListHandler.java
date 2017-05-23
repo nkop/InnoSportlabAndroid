@@ -19,10 +19,14 @@ import java.util.List;
  */
 
 public class PeerListHandler implements WifiP2pManager.PeerListListener {
+    //Never used, Ahmad?! 😡😡😡😡😡
     public List<WifiP2pDevice> peersList = new ArrayList<WifiP2pDevice>();
+
     public PeerListHandler(){
         super();
     }
+
+    //What is this?
     @Override
     public void onPeersAvailable(WifiP2pDeviceList peers) {
 

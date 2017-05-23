@@ -26,6 +26,7 @@ public class CameraService extends BroadcastReceiver {
         this.mActivity = activity;
     }
 
+    //Never used, Ahmad?!😡😡😡😡
     private void cleangroup(){
         mManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
             @Override

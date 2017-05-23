@@ -24,20 +24,21 @@ import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
 public class CameraViewActivity extends AppCompatActivity implements SurfaceHolder.Callback, MediaRecorder.OnInfoListener{
 
-    boolean isRecording = false;
-    public MediaRecorder mMediarecorder;
-    public VideoView vw1;
+    private boolean isRecording = false;
+    public MediaRecorder mediaRecorder;
+    public VideoView videoView;
+    //Camera deprecated, geen andere optie? Vanaf android 5.0 is nieuwe camera api beschikbaar. Maybe is dit prima
     public Camera camera;
-    public static String newvideopath;
-    SurfaceHolder mHolder;
-    HashMap<String, Integer> videoSettings;
+    public static String newVideoPath;
+    private SurfaceHolder surfaceHolder;
+    private HashMap<String, Integer> videoSettings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_view);
-        vw1 = (VideoView) findViewById(R.id.sv_camerapreview);
-        mHolder = vw1.getHolder();
-        mHolder.addCallback(this);
+        videoView = (VideoView) findViewById(R.id.camera_preview);
+        surfaceHolder = videoView.getHolder();
+        surfaceHolder.addCallback(this);
         videoSettings = new HashMap<>();
         Bundle extras = getIntent().getExtras();
         videoSettings.put("resolution_y", extras.getInt("resultion_y"));
@@ -50,26 +51,26 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
     private void setCamera() {
         if (isRecording) {
             // stop recording and release camera
-            mMediarecorder.stop();  // stop the recording
-            mMediarecorder.release(); // release the MediaRecorder object
+            mediaRecorder.stop();  // stop the recording
+            mediaRecorder.release(); // release the MediaRecorder object
             camera.lock();         // take camera access back from MediaRecorder
             // inform the user that recording has stopped
-            Uri videouri = Uri.fromFile(new File(newvideopath));
+            Uri.fromFile(new File(newVideoPath));
 
             //TODO CAMERA TERUGSTUREN
 //            mReceiver.sendData(videouri);
             isRecording = false;
         } else {
             // initialize video camera
-            if (newvideopath != null) {
+            if (newVideoPath != null) {
                 // Camera is available and unlocked, MediaRecorder is prepared,
                 // now you can start recording
-                mMediarecorder.start();
+                mediaRecorder.start();
 
                 isRecording = true;
             } else {
                 // prepare didn't work, release the camera
-                mMediarecorder.release();
+                mediaRecorder.release();
                 // inform user
             }
         }
@@ -78,40 +79,40 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
 
     private String prepareVideoRecorder(){
         camera = getCameraInstance();
-        mMediarecorder = new MediaRecorder();
+        mediaRecorder = new MediaRecorder();
 
         // Step 1: Unlock and set camera to MediaRecorder
         camera.unlock();
-        mMediarecorder.setCamera(camera);
-        mMediarecorder.setMaxDuration(videoSettings.get("duration"));
-        mMediarecorder.setOnInfoListener(this);
+        mediaRecorder.setCamera(camera);
+        mediaRecorder.setMaxDuration(videoSettings.get("duration"));
+        mediaRecorder.setOnInfoListener(this);
         // Step 2: Set sources
-        mMediarecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-        mMediarecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 //        mMediarecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 //        mMediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
 //        mMediarecorder.setVideoFrameRate(videoSettings.get("framerate"));
 //        mMediarecorder.setVideoSize(videoSettings.get("resolution_y"),videoSettings.get("resolution_x"));
         // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
-        mMediarecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
+        mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
 
         // Step 4: Set output file
         String filepath = getOutputMediaFile(MEDIA_TYPE_VIDEO).getAbsolutePath();
-        mMediarecorder.setOutputFile(filepath);
+        mediaRecorder.setOutputFile(filepath);
 
         // Step 5: Set the preview output
-        mMediarecorder.setPreviewDisplay(vw1.getHolder().getSurface());
+        mediaRecorder.setPreviewDisplay(videoView.getHolder().getSurface());
 
         // Step 6: Prepare configured MediaRecorder
         try {
-            mMediarecorder.prepare();
+            mediaRecorder.prepare();
         } catch (IllegalStateException e) {
             System.out.println("IllegalStateException preparing MediaRecorder: " + e.getMessage());
-            mMediarecorder.release();
+            mediaRecorder.release();
             return null;
         } catch (IOException e) {
             System.out.println("IOException preparing MediaRecorder: " + e.getMessage());
-            mMediarecorder.release();
+            mediaRecorder.release();
             return null;
         }
         return filepath;
@@ -157,7 +158,7 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         try {
-            newvideopath = prepareVideoRecorder();
+            newVideoPath = prepareVideoRecorder();
             setCamera();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -176,6 +177,7 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
 
 
     //check functions
+    //Never used, Ahmad?!😡😡😡😡😡
     /** Check if this device has a camera */
     private boolean checkCameraHardware(Context context) {
         if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
@@ -190,12 +192,12 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
     @Override
     public void onInfo(MediaRecorder mr, int what, int extra) {
         if(what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED){
-            mMediarecorder.stop();
-            mMediarecorder.release();
+            mediaRecorder.stop();
+            mediaRecorder.release();
             System.out.println(MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED);
             System.out.println(extra);
             System.out.println("Camera is done");
-            ServerService.VIDEOURI = Uri.fromFile(new File(newvideopath));
+            ServerService.VIDEOURI = Uri.fromFile(new File(newVideoPath));
             setResult(5);
             finish();
         }

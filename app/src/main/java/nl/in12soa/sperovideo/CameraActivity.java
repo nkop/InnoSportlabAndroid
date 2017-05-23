@@ -12,10 +12,11 @@ import nl.in12soa.sperovideo.Services.CameraService;
 
 public class CameraActivity extends AppCompatActivity implements WifiP2pManager.ConnectionInfoListener{
 
-    public static IntentFilter mIntentFilter;
-    public static WifiP2pManager mManager;
-    public static WifiP2pManager.Channel mChannel;
-    public static CameraService mReceiver;
+    //Waarom zijn deze static?
+    public static IntentFilter intentFilter;
+    public static WifiP2pManager p2pManager;
+    public static WifiP2pManager.Channel p2pManagerChannel;
+    public static CameraService cameraService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,27 +26,27 @@ public class CameraActivity extends AppCompatActivity implements WifiP2pManager.
     }
 
     private void setReceiver(){
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        mChannel = mManager.initialize(this, getMainLooper(), null);
-        mReceiver = new CameraService(mManager, mChannel, this);
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+        p2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+        p2pManagerChannel = p2pManager.initialize(this, getMainLooper(), null);
+        cameraService = new CameraService(p2pManager, p2pManagerChannel, this);
     }
 
     /* register the broadcast receiver with the intent values to be matched */
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(mReceiver, mIntentFilter);
+        registerReceiver(cameraService, intentFilter);
     }
     /* unregister the broadcast receiver */
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mReceiver);
+        unregisterReceiver(cameraService);
     }
 
     @Override
