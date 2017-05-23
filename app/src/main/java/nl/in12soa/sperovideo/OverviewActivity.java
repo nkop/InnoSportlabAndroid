@@ -1,30 +1,29 @@
 package nl.in12soa.sperovideo;
 
 import android.app.FragmentManager;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import nl.in12soa.sperovideo.Model.Video;
+import nl.in12soa.sperovideo.Models.Video;
 
 public class OverviewActivity extends AppCompatActivity implements OverviewFragment.OnItemSelectedListener {
 
-    private boolean mHasOnePane;
+    private boolean hasOnePane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
 
-        mHasOnePane = !getResources().getBoolean(R.bool.dual_pane);
+        hasOnePane = !getResources().getBoolean(R.bool.dual_pane);
 
-        if (mHasOnePane)
+        if (hasOnePane)
         {
             FragmentManager fm = getFragmentManager();
             if (fm.findFragmentByTag("list") == null)
             {
-                fm.beginTransaction().add(R.id.container, new OverviewFragment(), "list").commit();
+                fm.beginTransaction().add(R.id.framelayout, new OverviewFragment(), "list").commit();
             }
         }
     }

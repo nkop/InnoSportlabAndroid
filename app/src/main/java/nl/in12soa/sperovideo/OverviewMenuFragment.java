@@ -12,15 +12,12 @@ import android.widget.Button;
 
 public class OverviewMenuFragment extends Fragment {
 
-    private View mView;
-    private Button logoutButton;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mView = inflater.inflate(R.layout.overview_menu_fragment, container, false);
+        View view = inflater.inflate(R.layout.overview_menu_fragment, container, false);
 
-        logoutButton = (Button)mView.findViewById(R.id.logoutButton);
+        Button logoutButton = (Button) view.findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -29,6 +26,6 @@ public class OverviewMenuFragment extends Fragment {
             }
         });
 
-        return mView;
+        return view;
     }
 }
