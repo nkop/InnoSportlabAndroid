@@ -53,7 +53,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         cameraSelected = false;
 
-        vw1 = (SurfaceView) findViewById(R.id.surfaceView);
+        vw1 = (SurfaceView) findViewById(R.id.surface_view);
         vw1_holder = vw1.getHolder();
         rv_peerlist = (RecyclerView) findViewById(R.id.rv_peerlist);
         mLinearLayoutManager = new LinearLayoutManager(this);
@@ -76,7 +76,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
     }
 
     private void setListeners() {
-        (findViewById(R.id.btn_refresh)).setOnClickListener(new View.OnClickListener() {
+        (findViewById(R.id.refresh_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mReceiver.peerDiscovery();
