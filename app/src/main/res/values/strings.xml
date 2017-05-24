@@ -1,8 +1,18 @@
 <resources>
+    <!--MainActivity strings-->
     <string name="app_name">SperoVideo</string>
-    <string name="afstandsbediening">Afstandsbediening</string>
+    <string name="remote_control">Afstandsbediening</string>
     <string name="register_button">Registreren</string>
+    <string name="analyse_button">Analyse</string>
+    <string name="camera_button">Camera</string>
+
     <string name="scan_chip_or_manual">Scan chip of start manueel</string>
+
+    <!--Analyse strings-->
+    <string name="analyse_title">Analyse</string>
+    <string name="select_camera">Selecteer een camera</string>
+    <string name="refresh_button">Refresh</string>
+    <string name="logout_button">Uitloggen</string>
 
     <!--Register strings-->
     <string name="email_hint">E-mail</string>
@@ -20,5 +30,11 @@
 
     <!--Settings strings-->
     <string name="settings_title">Instellingen</string>
+
+    <!--Login strings-->
+    <string name="login_button">Login</string>
+
+    <!--Remote strings-->
+    <string name="remote_hint">Scan uw RFID band om de opname te beginnen</string>
 </resources>
 

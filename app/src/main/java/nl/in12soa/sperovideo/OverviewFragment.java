@@ -1,6 +1,5 @@
 package nl.in12soa.sperovideo;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -8,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.android.volley.Request;
@@ -24,18 +22,19 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import nl.in12soa.sperovideo.Adapters.VideoAdapter;
-import nl.in12soa.sperovideo.Model.Video;
+import nl.in12soa.sperovideo.Models.Video;
 import nl.in12soa.sperovideo.Services.ApiService;
 
 
 public class OverviewFragment extends Fragment {
 
+    //Wouter maybe kan je beter OnItemSelectedListener implementen, ff naar kijken.
     OnItemSelectedListener listener;
 
-    public ArrayList<Video> videoArray = new ArrayList<>();
-    public String getVideosURL;
-    public VideoAdapter videoAdapter;
-    public View view;
+    private ArrayList<Video> videoArray = new ArrayList<>();
+    private String getVideosURL;
+    private VideoAdapter videoAdapter;
+    private View view;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -79,7 +78,7 @@ public class OverviewFragment extends Fragment {
                     }
 
                     videoAdapter = new VideoAdapter(getActivity().getApplicationContext(), videoArray);
-                    ListView listView = (ListView) view.findViewById(R.id.videoList);
+                    ListView listView = (ListView) view.findViewById(R.id.video_list);
                     videoAdapter.notifyDataSetChanged();
                     listView.setAdapter(videoAdapter);
 

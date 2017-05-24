@@ -11,18 +11,18 @@
     tools:context="nl.in12soa.sperovideo.RemoteActivity">
 
     <TextView
-        android:text="Selecteer camera"
+        android:text="@string/select_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView3"
+        android:id="@+id/textview"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <Button
-        android:text="Refresh"
+        android:text="@string/refresh_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btn_refresh"
+        android:id="@+id/refresh_button"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -33,7 +33,7 @@
     <SurfaceView
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:id="@+id/surfaceView"
+        android:id="@+id/surface_view"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:id="@+id/rv_peerlist"
-        android:layout_below="@+id/btn_refresh"
+        android:layout_below="@+id/refresh_button"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 </RelativeLayout>
