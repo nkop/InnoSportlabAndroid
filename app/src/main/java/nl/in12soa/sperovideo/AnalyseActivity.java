@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import nl.in12soa.sperovideo.Models.Peer;
+import nl.in12soa.sperovideo.Services.ActionBarService;
 import nl.in12soa.sperovideo.Services.AnalyseService;
 import nl.in12soa.sperovideo.Services.ClientService;
 
@@ -38,6 +39,8 @@ public class AnalyseActivity extends AppCompatActivity implements WifiP2pManager
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analyse);
+        ActionBarService.setActionBarTitle(R.string.analyse, getSupportActionBar());
+
         pla = new PeerListAdapter(new ArrayList<Peer>(), this);
         setReceiver();
         setListeners();

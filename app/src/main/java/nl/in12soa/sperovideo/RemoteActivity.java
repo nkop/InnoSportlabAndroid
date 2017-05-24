@@ -16,6 +16,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 
 import nl.in12soa.sperovideo.Models.Peer;
+import nl.in12soa.sperovideo.Services.ActionBarService;
 import nl.in12soa.sperovideo.Services.AnalyseService;
 import nl.in12soa.sperovideo.Services.ClientService;
 
@@ -30,6 +31,8 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfc);
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        ActionBarService.setActionBarTitle(R.string.remote, getSupportActionBar());
+
 
         clientService = new ClientService(this);
     }

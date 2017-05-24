@@ -12,7 +12,9 @@ import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,16 +50,17 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText usernameInput;
     private EditText passwordInput;
     private EditText passwordConfirmInput;
+    private ProgressBar spinner;
+    private Button registerButton;
 
     //Optional
-    private TextView nfcText;
+    private TextView nfcInput;
     private String nfcId = "";
 
     //Map to put params in for request
     private Map<String, String> params = new HashMap<>();
 
     //Url to post the user to
-    //private String createUserURL = "https://innosportlab.herokuapp.com/users";
     private String validateSignupURL = "https://innosportlab.herokuapp.com/users/validateSignup";
 
     @Override
@@ -65,21 +68,24 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        ActionBarService.setActionBarTitle(R.string.register_title, getSupportActionBar());
+        ActionBarService.setActionBarTitle(R.string.register, getSupportActionBar());
 
         //Initialize form fields
+        registerButton = (Button) findViewById(R.id.register_submit);
         emailInput = (EditText) findViewById(R.id.email_input);
         usernameInput = (EditText) findViewById(R.id.username_input);
         passwordInput = (EditText) findViewById(R.id.password_input);
         passwordConfirmInput = (EditText) findViewById(R.id.password_confirm_input);
-        nfcText = (TextView) findViewById(R.id.registerNfc);
-
+        nfcInput = (TextView) findViewById(R.id.nfc_textview);
+        spinner = (ProgressBar) findViewById(R.id.register_spinner);
+        spinner.setVisibility(View.GONE);
     }
 
     //User gets registered here.
     public void registerUser(View v) {
         if (formIsValid()) {
             createUserObject();
+            disableRegistration();
             //Create a json object request
             JsonObjectRequest jsObjRequest = new JsonObjectRequest
                     //POST, URL, PARAMS, RESPONSE LISTENER
@@ -87,8 +93,10 @@ public class RegisterActivity extends AppCompatActivity {
                         //If successful
                         @Override
                         public void onResponse(JSONObject response) {
-                            Toast.makeText(getApplicationContext(), "Register successful", Toast.LENGTH_LONG).show();
+                            enableRegistration();
+                            Toast.makeText(getApplicationContext(), "Registratie succesvol!", Toast.LENGTH_LONG).show();
                             params.clear();
+
                         }
                     }, new Response.ErrorListener() {
                         @Override
@@ -104,10 +112,10 @@ public class RegisterActivity extends AppCompatActivity {
                                 if(message.contains("Email")){
                                     emailInput.setError("Email adres bestaat al");
                                 }
+                                enableRegistration();
                             }catch (UnsupportedEncodingException | JSONException e) {
                                 e.printStackTrace();
                             }
-                            //Toast.makeText(getApplicationContext(), "Registration not successful", Toast.LENGTH_LONG).show();
                         }
                     });
             //Add this JSON object request to the requestQueue of the api
@@ -197,7 +205,7 @@ public class RegisterActivity extends AppCompatActivity {
                     serialstring += x + ' ';
                 }
                 nfcId = serialstring;
-                nfcText.setText("Uw NFC id is: " + serialstring);
+                nfcInput.setText("Uw NFC id is: " + serialstring);
             }
         }
     }
@@ -236,5 +244,15 @@ public class RegisterActivity extends AppCompatActivity {
             return(true);
     }
         return(super.onOptionsItemSelected(item));
+    }
+
+    private void enableRegistration(){
+        registerButton.setVisibility(View.VISIBLE);
+        spinner.setVisibility(View.GONE);
+    }
+
+    private void disableRegistration(){
+        registerButton.setVisibility(View.GONE);
+        spinner.setVisibility(View.VISIBLE);
     }
 }

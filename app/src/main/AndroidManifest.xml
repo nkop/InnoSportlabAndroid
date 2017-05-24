@@ -36,7 +36,7 @@
         </activity>
         <activity android:name=".RegisterActivity">
             <intent-filter>
-                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+                <action android:name="android.nfc.action.TAG_DISCOVERED" android:noHistory="true"/>
             </intent-filter>
         </activity>
         <activity android:name=".RemoteActivity">
@@ -44,12 +44,12 @@
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
             </intent-filter>
         </activity>
-        <activity android:name=".AnalyseActivity"/>
-        <activity android:name=".CameraActivity" />
+        <activity android:name=".AnalyseActivity" android:noHistory="true"/>
+        <activity android:name=".CameraActivity" android:noHistory="true" />
         <activity android:name=".CameraViewActivity"/>
-        <activity android:name=".OverviewActivity"></activity>
-        <activity android:name=".LoginActivity"/>
-        <activity android:name=".SettingsActivity"/>
+        <activity android:name=".OverviewActivity" android:noHistory="true"/>
+        <activity android:name=".LoginActivity" android:noHistory="true"/>
+        <activity android:name=".SettingsActivity" android:noHistory="true"/>
     </application>
 
 </manifest>

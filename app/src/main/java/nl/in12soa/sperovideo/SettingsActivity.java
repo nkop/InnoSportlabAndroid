@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import nl.in12soa.sperovideo.Services.ActionBarService;
+
 /**
  * Created by mickd on 15-5-2017.
  */
@@ -15,5 +17,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        ActionBarService.setActionBarTitle(R.string.settings, getSupportActionBar());
+
     }
 }
