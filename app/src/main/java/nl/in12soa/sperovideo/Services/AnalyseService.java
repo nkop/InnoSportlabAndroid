@@ -12,7 +12,7 @@ import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.in12soa.sperovideo.AnalyseActivity;
+import nl.in12soa.sperovideo.RemoteActivity;
 import nl.in12soa.sperovideo.Models.Peer;
 import nl.in12soa.sperovideo.Models.PeerListHandler;
 import nl.in12soa.sperovideo.PeerListAdapter;
@@ -24,9 +24,9 @@ public class AnalyseService extends BroadcastReceiver {
     public PeerListHandler mPeerHandler;
     public PeerListAdapter pla;
     private boolean isconnected = false;
-    AnalyseActivity mActivity;
-    final HashMap<String, String> cameraServices = new HashMap<>();
-    public AnalyseService(AnalyseActivity act, WifiP2pManager.Channel channelp, WifiP2pManager mgrp, PeerListAdapter plap){
+    RemoteActivity mActivity;
+    final HashMap<String, String> cameraServices = new HashMap<String, String>();
+    public AnalyseService(RemoteActivity act, WifiP2pManager.Channel channelp, WifiP2pManager mgrp, PeerListAdapter plap){
         super();
         mActivity = act;
         mManager = mgrp;

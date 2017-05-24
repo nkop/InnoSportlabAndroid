@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="nl.in12soa.sperovideo.RemoteActivity">
+    tools:context="nl.in12soa.sperovideo.RemoteActivitybak">
 
     <TextView
         android:id="@+id/nfcText"
@@ -12,4 +12,29 @@
         android:layout_height="wrap_content"
         android:text="@string/remote_hint"
         android:layout_gravity="center_horizontal"/>
-</LinearLayout>
+
+    <Button
+        android:text="Refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_refresh"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:id="@+id/rv_peerlist"
+        android:layout_below="@+id/btn_refresh"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <SurfaceView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:id="@+id/surfaceView"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>
