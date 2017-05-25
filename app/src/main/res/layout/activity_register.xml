@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/password_confirm_hint"/>
     <TextView
-        android:id="@+id/registerNfc"
+        android:id="@+id/nfc_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -37,16 +37,25 @@
         android:textSize="14dp"
         android:textStyle="italic"/>
     <EditText
+        android:id="@+id/nfc_input"
         android:enabled="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <Button
-        android:text="@string/register_title"
+        android:id="@+id/register_submit"
+        android:text="@string/register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:textColor="@color/colorAccent"
         android:layout_gravity="right"
         android:onClick="registerUser"/>
+
+    <ProgressBar
+        android:id="@+id/register_spinner"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

@@ -22,6 +22,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 
 import nl.in12soa.sperovideo.Models.Peer;
+import nl.in12soa.sperovideo.Services.ActionBarService;
 import nl.in12soa.sperovideo.Services.AnalyseService;
 import nl.in12soa.sperovideo.Services.ClientService;
 
@@ -51,6 +52,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
         setReceiver();
         setListeners();
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        ActionBarService.setActionBarTitle(R.string.remote, getSupportActionBar());
         cameraSelected = false;
 
         vw1 = (SurfaceView) findViewById(R.id.surface_view);

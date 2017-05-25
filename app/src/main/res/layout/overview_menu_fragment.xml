@@ -8,10 +8,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="@string/logout_button"
+        android:text="@string/logout"
         android:layout_marginTop="20dp"
         android:background="@color/colorPrimary"
         android:textColor="@color/colorAccent"
         android:id="@+id/logout_button"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/remote"
+        android:textColor="@color/colorAccent"
+        android:background="@color/colorPrimary"
+        android:id="@+id/remote_button_analyse"/>
 
 </LinearLayout>

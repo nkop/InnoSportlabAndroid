@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
         (findViewById(R.id.analyse_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent analyse = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(analyse);
+                Intent login = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(login);
             }
         });
 
