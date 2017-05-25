@@ -13,7 +13,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import nl.in12soa.sperovideo.AnalyseActivity;
+import nl.in12soa.sperovideo.RemoteActivity;
 
 /**
  * Created by Ahmad on 3/10/2017.
@@ -93,7 +93,7 @@ public class ClientService{
             in.close();
             f.setReadable(true, false);
             f.setExecutable(true, false);
-            ((AnalyseActivity)mContext).playVideo(Uri.fromFile(f));
+            ((RemoteActivity)mContext).playVideo(Uri.fromFile(f));
         } catch (Exception e) {
             e.printStackTrace();
         }

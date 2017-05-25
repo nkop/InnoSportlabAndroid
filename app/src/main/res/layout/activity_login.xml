@@ -35,7 +35,7 @@
     android:background="@color/colorPrimary"
     android:textColor="@color/colorAccent"
         android:onClick="doLogin"/>
-
+    
     <ProgressBar
         android:id="@+id/login_spinner"
         style="?android:attr/progressBarStyleLarge"
