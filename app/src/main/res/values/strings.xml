@@ -31,5 +31,9 @@
 
     <!--Remote strings-->
     <string name="remote_hint">Scan uw RFID band om de opname te beginnen</string>
+
+    <!--Settings strings-->
+    <string name="resolution_label">Resolutie</string>
+    <string name="fps_label">Frames per seconde(fps)</string>
 </resources>
 
