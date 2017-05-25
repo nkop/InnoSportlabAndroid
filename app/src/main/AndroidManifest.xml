@@ -44,7 +44,6 @@
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
             </intent-filter>
         </activity>
-        <activity android:name=".AnalyseActivity" android:noHistory="true"/>
         <activity android:name=".CameraActivity" android:noHistory="true" />
         <activity android:name=".CameraViewActivity"/>
         <activity android:name=".OverviewActivity" android:noHistory="true"/>
