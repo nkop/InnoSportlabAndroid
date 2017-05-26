@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import nl.in12soa.sperovideo.Models.Video;
+import nl.in12soa.sperovideo.Services.ActionBarService;
 
 public class OverviewActivity extends AppCompatActivity implements OverviewFragment.OnItemSelectedListener {
 
@@ -15,6 +16,8 @@ public class OverviewActivity extends AppCompatActivity implements OverviewFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
+        ActionBarService.setActionBarTitle(R.string.analyse, getSupportActionBar());
+
 
         hasOnePane = !getResources().getBoolean(R.bool.dual_pane);
 

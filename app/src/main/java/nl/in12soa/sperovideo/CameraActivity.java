@@ -8,6 +8,7 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import nl.in12soa.sperovideo.Services.ActionBarService;
 import nl.in12soa.sperovideo.Services.CameraService;
 
 public class CameraActivity extends AppCompatActivity implements WifiP2pManager.ConnectionInfoListener{
@@ -22,6 +23,8 @@ public class CameraActivity extends AppCompatActivity implements WifiP2pManager.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        ActionBarService.setActionBarTitle(R.string.camera, getSupportActionBar());
+
         setReceiver();
     }
 

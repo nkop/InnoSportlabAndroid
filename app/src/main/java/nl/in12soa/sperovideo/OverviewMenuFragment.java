@@ -18,6 +18,7 @@ public class OverviewMenuFragment extends Fragment {
         View view = inflater.inflate(R.layout.overview_menu_fragment, container, false);
 
         Button logoutButton = (Button) view.findViewById(R.id.logout_button);
+        Button remoteButton = (Button) view.findViewById(R.id.remote_button_analyse);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -25,6 +26,15 @@ public class OverviewMenuFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        remoteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), RemoteActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
         return view;
     }
