@@ -12,9 +12,12 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nl.in12soa.sperovideo.Services.ActionBarService;
 
@@ -28,7 +31,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     private Spinner fpsSpinner;
     private ArrayList<String> resolutionList = new ArrayList<>();
     private ArrayList<String> fpsList = new ArrayList<>();
-    public static final String PREFS = "Preferences";
+    public static final String PREFS = "CameraSettings";
     public SharedPreferences preferences;
 
     @Override
@@ -44,6 +47,18 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
         initializeResolutionList();
         initializeFpsList();
+
+        preferences = getSharedPreferences(PREFS, 0);
+        String resolutionX = preferences.getString("resolutionX", null);
+        String resolutionY = preferences.getString("resolutionY", null);
+        String fps = preferences.getString("fps", null);
+        if( resolutionX!= null && resolutionY != null){
+            String concattedResolution = resolutionX + "x" + resolutionY;
+            resolutionSpinner.setSelection(resolutionList.indexOf(concattedResolution));
+        }
+        if(fps != null){
+            fpsSpinner.setSelection(fpsList.indexOf(fps));
+        }
 
         resolutionSpinner.setOnItemSelectedListener(this);
         fpsSpinner.setOnItemSelectedListener(this);
@@ -74,14 +89,24 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        SharedPreferences.Editor editor = preferences.edit();
         switch(parent.getId()){
             case R.id.resolution_spinner:
-                System.out.println(parent.getSelectedItem().toString());
+                String selectedResolution = parent.getSelectedItem().toString();
+                String[] resolutionValues = selectedResolution.split("x");
+
+                editor.putString("resolutionX", resolutionValues[0]);
+                editor.putString("resolutionY", resolutionValues[1]);
+
+                Toast.makeText(getApplicationContext(), "Resolutie opgeslagen", Toast.LENGTH_LONG).show();
                 break;
             case R.id.fps_spinner:
-                System.out.println(parent.getSelectedItem().toString());
+                editor.putString("fps", parent.getSelectedItem().toString());
+                Toast.makeText(getApplicationContext(), "Frames per seconde(fps) succesvol opgeslagen", Toast.LENGTH_LONG).show();
                 break;
         }
+
+        editor.apply();
     }
 
     @Override

@@ -30,7 +30,6 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
     private boolean isRecording = false;
     public MediaRecorder mediaRecorder;
     public VideoView videoView;
-    //Camera deprecated, geen andere optie? Vanaf android 5.0 is nieuwe camera api beschikbaar. Maybe is dit prima
     public Camera camera;
     public static String newVideoPath;
     private SurfaceHolder surfaceHolder;
