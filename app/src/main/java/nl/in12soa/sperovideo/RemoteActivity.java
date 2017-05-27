@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pInfo;
@@ -39,6 +40,8 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
     RecyclerView rv_peerlist;
     ClientService clientService;
     Boolean cameraSelected;
+    public static final String PREFS = "CameraSettings";
+    public SharedPreferences preferences;
 
     public SurfaceView vw1;
     public SurfaceHolder vw1_holder;
@@ -49,6 +52,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analyse);
         pla = new PeerListAdapter(new ArrayList<Peer>(), this);
+        preferences = getSharedPreferences(PREFS, 0);
         setReceiver();
         setListeners();
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -159,7 +163,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                 serialstring += x + ' ';
             }
             if (cameraSelected) {
-                clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : 30, \"resolution_y\" : 640, \"resolution_x\" : 480, \"duration\" : 10000 } }");
+                clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", null) + ", \"resolution_y\" : " + preferences.getString("ResolutionY", null) + ", \"resolution_x\" : " + preferences.getString("resolutionX", null)  + ", \"duration\" : 10000 } }");
             }
         }
     }
