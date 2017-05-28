@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pInfo;
@@ -46,6 +47,9 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
     RecyclerView rv_peerlist;
     ClientService clientService;
     Boolean cameraSelected;
+
+    public static final String PREFS = "CameraSettings";
+    public SharedPreferences preferences;
     public TextView feedbacktv;
     public ProgressBar feedbackpb;
     public SurfaceView vw1;
@@ -61,6 +65,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
         feedbackpb = (ProgressBar) findViewById(R.id.pb_feedback);
         feedbacktv = (TextView) findViewById(R.id.tv_feedback);
         pla = new PeerListAdapter(new ArrayList<Peer>(), this);
+        preferences = getSharedPreferences(PREFS, 0);
         setReceiver();
         setListeners();
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -227,6 +232,10 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                     setFeedback("Recording video", true, 8000);
                     clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : 30, \"resolution_y\" : 640, \"resolution_x\" : 480, \"duration\" : 10000 } }");
                 }
+                serialstring += x + ' ';
+            }
+            if (cameraSelected) {
+                clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", null) + ", \"resolution_y\" : " + preferences.getString("ResolutionY", null) + ", \"resolution_x\" : " + preferences.getString("resolutionX", null)  + ", \"duration\" : 10000 } }");
             }
         } else {
             setFeedback("This device does not support NFC", true, 8000);

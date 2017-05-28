@@ -1,6 +1,7 @@
 package nl.in12soa.sperovideo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -9,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.widget.VideoView;
 
@@ -22,16 +25,16 @@ import nl.in12soa.sperovideo.Services.ServerService;
 
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
-public class CameraViewActivity extends AppCompatActivity implements SurfaceHolder.Callback, MediaRecorder.OnInfoListener{
+public class CameraViewActivity extends AppCompatActivity implements SurfaceHolder.Callback, MediaRecorder.OnInfoListener {
 
     private boolean isRecording = false;
     public MediaRecorder mediaRecorder;
     public VideoView videoView;
-    //Camera deprecated, geen andere optie? Vanaf android 5.0 is nieuwe camera api beschikbaar. Maybe is dit prima
     public Camera camera;
     public static String newVideoPath;
     private SurfaceHolder surfaceHolder;
     private HashMap<String, Integer> videoSettings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +80,7 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
     }
 
 
-    private String prepareVideoRecorder(){
+    private String prepareVideoRecorder() {
         camera = getCameraInstance();
         camera.setDisplayOrientation(90);
         mediaRecorder = new MediaRecorder();
@@ -119,7 +122,7 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         return filepath;
     }
 
-    private File getOutputMediaFile(int type){
+    private File getOutputMediaFile(int type) {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
 
@@ -129,8 +132,8 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         // between applications and persist after your app has been uninstalled.
 
         // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
                 System.out.println("failed to create directory");
                 return null;
             }
@@ -140,17 +143,18 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
         mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                "VID_"+ timeStamp + ".mp4");
+                "VID_" + timeStamp + ".mp4");
         return mediaFile;
     }
 
-    /** A safe way to get an instance of the Camera object. */
-    public static Camera getCameraInstance(){
+    /**
+     * A safe way to get an instance of the Camera object.
+     */
+    public static Camera getCameraInstance() {
         Camera c = null;
         try {
             c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("No camera available");
         }
         return c; // returns null if camera is unavailable
@@ -179,9 +183,12 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
 
     //check functions
     //Never used, Ahmad?!😡😡😡😡😡
-    /** Check if this device has a camera */
+
+    /**
+     * Check if this device has a camera
+     */
     private boolean checkCameraHardware(Context context) {
-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             // this device has a camera
             return true;
         } else {
@@ -192,7 +199,7 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
 
     @Override
     public void onInfo(MediaRecorder mr, int what, int extra) {
-        if(what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED){
+        if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
             mediaRecorder.stop();
             mediaRecorder.release();
             camera.stopPreview();
