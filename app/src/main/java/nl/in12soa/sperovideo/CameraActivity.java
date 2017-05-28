@@ -16,17 +16,16 @@ import nl.in12soa.sperovideo.Services.CameraService;
 public class CameraActivity extends AppCompatActivity implements WifiP2pManager.ConnectionInfoListener{
 
     //Waarom zijn deze static?
-    public static IntentFilter intentFilter;
-    public static WifiP2pManager p2pManager;
-    public static WifiP2pManager.Channel p2pManagerChannel;
-    public static CameraService cameraService;
+    public IntentFilter intentFilter;
+    public WifiP2pManager p2pManager;
+    public WifiP2pManager.Channel p2pManagerChannel;
+    public CameraService cameraService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         ActionBarService.setActionBarTitle(R.string.camera, getSupportActionBar());
-
         setReceiver();
     }
 
