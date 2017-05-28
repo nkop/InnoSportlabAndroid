@@ -79,6 +79,7 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
 
     private String prepareVideoRecorder(){
         camera = getCameraInstance();
+        camera.setDisplayOrientation(90);
         mediaRecorder = new MediaRecorder();
 
         // Step 1: Unlock and set camera to MediaRecorder
@@ -161,7 +162,7 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
             newVideoPath = prepareVideoRecorder();
             setCamera();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -194,6 +195,9 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         if(what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED){
             mediaRecorder.stop();
             mediaRecorder.release();
+            camera.stopPreview();
+            camera.release();
+            camera = null;
             System.out.println(MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED);
             System.out.println(extra);
             System.out.println("Camera is done");

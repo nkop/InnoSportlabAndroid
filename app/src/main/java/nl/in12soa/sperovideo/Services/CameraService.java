@@ -14,16 +14,18 @@ import nl.in12soa.sperovideo.CameraActivity;
 
 public class CameraService extends BroadcastReceiver {
 
-    private WifiP2pManager mManager;
-    private WifiP2pManager.Channel mChannel;
+    public WifiP2pManager mManager;
+    public WifiP2pManager.Channel mChannel;
     private CameraActivity mActivity;
     public ServerService dataService;
+    public WifiP2pDnsSdServiceInfo serviceInfo;
     public CameraService(WifiP2pManager manager, WifiP2pManager.Channel channel,
                          CameraActivity activity) {
         super();
         this.mManager = manager;
         this.mChannel = channel;
         this.mActivity = activity;
+        cleangroup();
     }
 
     //Never used, Ahmad?!😡😡😡😡
@@ -38,6 +40,18 @@ public class CameraService extends BroadcastReceiver {
             @Override
             public void onFailure(int reason) {
                 System.out.println("Group remove failed");
+            }
+        });
+
+        mManager.clearLocalServices(mChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure(int reason) {
+
             }
         });
     }
@@ -86,7 +100,7 @@ public class CameraService extends BroadcastReceiver {
         // Service information.  Pass it an instance name, service type
         // _protocol._transportlayer , and the map containing
         // information other devices will want once they connect to this one.
-        WifiP2pDnsSdServiceInfo serviceInfo =
+        serviceInfo =
                 WifiP2pDnsSdServiceInfo.newInstance("_speroservice", "_presence._tcp", record);
 
         // Add the local service, sending the service info, network channel,

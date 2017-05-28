@@ -11,7 +11,7 @@
     tools:context="nl.in12soa.sperovideo.CameraViewActivity">
 
     <VideoView
-        android:layout_width="352px"
-        android:layout_height="288px"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/camera_preview" />
 </LinearLayout>
