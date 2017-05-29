@@ -229,14 +229,10 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                     serialstring += x + ' ';
                 }
                 if (cameraSelected) {
-                    setFeedback("Recording video", true, 8000);
-                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : 30, \"resolution_y\" : 640, \"resolution_x\" : 480, \"duration\" : 10000 } }");
+                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", null) + ", \"resolution_y\" : " + preferences.getString("ResolutionY", null) + ", \"resolution_x\" : " + preferences.getString("resolutionX", null)  + ", \"duration\" : 10000 } }");
                 }
-                serialstring += x + ' ';
             }
-            if (cameraSelected) {
-                clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", null) + ", \"resolution_y\" : " + preferences.getString("ResolutionY", null) + ", \"resolution_x\" : " + preferences.getString("resolutionX", null)  + ", \"duration\" : 10000 } }");
-            }
+
         } else {
             setFeedback("This device does not support NFC", true, 8000);
         }
