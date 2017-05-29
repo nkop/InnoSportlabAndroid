@@ -19,6 +19,7 @@ public class OverviewMenuFragment extends Fragment {
 
         Button logoutButton = (Button) view.findViewById(R.id.logout_button);
         Button remoteButton = (Button) view.findViewById(R.id.remote_button_analyse);
+
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -34,7 +35,6 @@ public class OverviewMenuFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
 
         return view;
     }

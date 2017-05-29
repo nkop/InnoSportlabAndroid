@@ -37,9 +37,9 @@ public class VideoAdapter extends ArrayAdapter<Video> {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.overview_list_item, parent, false);
         }
 
-        String dateString = video.date.substring(0, 10);
+//        String dateString = video.date.substring(0, 10);
         TextView videoText = (TextView) convertView.findViewById(R.id.video_item);
-        videoText.setText((position + 1) + " - Video van " + dateString);
+        videoText.setText((position + 1) + " - Video " + (position + 1));
 
         return convertView;
     }
