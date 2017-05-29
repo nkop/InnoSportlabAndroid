@@ -2,6 +2,7 @@ package nl.in12soa.sperovideo;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
@@ -33,6 +37,7 @@ public class OverviewFragment extends Fragment {
     OnItemSelectedListener listener;
 
     private ArrayList<Video> videoArray = new ArrayList<>();
+    private File[] videoLocalArray;
     private String getVideosURL;
     private VideoAdapter videoAdapter;
     private View view;
@@ -45,6 +50,28 @@ public class OverviewFragment extends Fragment {
         getVideosURL = "http://innosportlab.herokuapp.com/users/" + userID + "/videos";
 
         getVideos();
+
+        videoArray = new ArrayList<>();
+        for(int i = 0; i < videoLocalArray.length; i++)
+        {
+            Video video = new Video("1", videoLocalArray[i].getAbsolutePath(), "322332", "321132");
+            videoArray.add(video);
+        }
+
+        videoAdapter = new VideoAdapter(getActivity().getApplicationContext(), videoArray);
+        ListView listView = (ListView) view.findViewById(R.id.video_list);
+        videoAdapter.notifyDataSetChanged();
+        listView.setAdapter(videoAdapter);
+
+        AdapterView.OnItemClickListener mMessageClickedHandler = new
+                AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView parent, View v, int position, long id) {
+                        Video video = videoAdapter.getItem(position);
+                        listener.onItemSelected(video);
+                    }
+                };
+
+        listView.setOnItemClickListener(mMessageClickedHandler);
 
         return view;
     }
@@ -62,7 +89,30 @@ public class OverviewFragment extends Fragment {
 
     private void getVideos()
     {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, getVideosURL, new Response.Listener<String>(){
+        try {
+            String path = Environment.getExternalStorageDirectory() + "/" + getActivity().getApplicationContext().getPackageName();
+            File dir = new File(path);
+            videoLocalArray = dir.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File file) {
+                    if (file.isFile()) {
+                        if (file.getName().equals(".nomedia"))
+                            return false;
+                        return checkFileExtension(file);
+                    } else if (file.isDirectory()) {
+                        return false;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        /*StringRequest stringRequest = new StringRequest(Request.Method.GET, getVideosURL, new Response.Listener<String>(){
             @Override
             public void onResponse(String response) {
                 try{
@@ -112,6 +162,47 @@ public class OverviewFragment extends Fragment {
             }
         });
         //Add this JSON object request to the requestQueue of the api
-        ApiService.getInstance(getActivity().getApplicationContext()).addToRequestQueue(stringRequest);
+        ApiService.getInstance(getActivity().getApplicationContext()).addToRequestQueue(stringRequest);*/
+    }
+
+    private boolean checkFileExtension( File fileName ) {
+        String ext = getFileExtension(fileName);
+        if ( ext == null) return false;
+        try {
+            if ( SupportedFileFormat.valueOf(ext.toUpperCase()) != null ) {
+                return true;
+            }
+        } catch(IllegalArgumentException e) {
+            //Not known enum value
+            return false;
+        }
+        return false;
+    }
+
+    public String getFileExtension( File f ) {
+        return getFileExtension( f.getName() );
+    }
+
+    public String getFileExtension( String fileName ) {
+        int i = fileName.lastIndexOf('.');
+        if (i > 0) {
+            return fileName.substring(i+1);
+        } else
+            return null;
+    }
+
+    public enum SupportedFileFormat
+    {
+        MP4("mp4");
+
+        private String filesuffix;
+
+        SupportedFileFormat( String filesuffix ) {
+            this.filesuffix = filesuffix;
+        }
+
+        public String getFilesuffix() {
+            return filesuffix;
+        }
     }
 }

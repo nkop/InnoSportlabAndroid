@@ -65,19 +65,27 @@ public class LoginActivity extends AppCompatActivity {
                         //If succesfull
                         @Override
                         public void onResponse(JSONObject response) {
-                            try{
-                                id = response.getString("_id");
-                            }
-                            catch(Exception e)
+                            if (response != null && response.length() > 0)
                             {
-                                Toast.makeText(getApplicationContext(), "Ophalen gegevens mislukt. Probeer het later opnieuw", Toast.LENGTH_LONG).show();
-                                e.printStackTrace();
+                                try{
+                                    id = response.getString("_id");
+                                }
+                                catch(Exception e)
+                                {
+                                    Toast.makeText(getApplicationContext(), "Ophalen gegevens mislukt. Probeer het later opnieuw", Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
+                                }
+                                Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
+                                intent.putExtra("userID", id);
+                                startActivity(intent);
+                                params.clear();
+                                enableLogin();
                             }
-                            Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
-                            intent.putExtra("userID", id);
-                            startActivity(intent);
-                            params.clear();
-                            enableLogin();
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(), "Ophalen gegevens mislukt. Probeer het opnieuw", Toast.LENGTH_LONG).show();
+                            }
+
                         }
                     }, new Response.ErrorListener() {
                         @Override

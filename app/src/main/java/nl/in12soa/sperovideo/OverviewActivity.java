@@ -1,6 +1,7 @@
 package nl.in12soa.sperovideo;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -18,7 +19,6 @@ public class OverviewActivity extends AppCompatActivity implements OverviewFragm
         setContentView(R.layout.activity_overview);
         ActionBarService.setActionBarTitle(R.string.analyse, getSupportActionBar());
 
-
         hasOnePane = !getResources().getBoolean(R.bool.dual_pane);
 
         if (hasOnePane)
@@ -33,6 +33,9 @@ public class OverviewActivity extends AppCompatActivity implements OverviewFragm
 
     @Override
     public void onItemSelected(Video video) {
-        Toast.makeText(getApplicationContext(), "Sporter: " + video.sporter, Toast.LENGTH_LONG).show();
+//        Toast.makeText(getApplicationContext(), "Sporter: " + video.sporter, Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getApplicationContext(), VideoAnalyseActivity.class);
+        intent.putExtra("filePath", video.filePath);
+        startActivity(intent);
     }
 }
