@@ -1,16 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
-        android:text="@string/settings"
+        android:id="@+id/resolution_label"
+        android:text="@string/resolution_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/resolution_spinner"
         android:textColor="@color/colorAccent"
-        android:layout_gravity="center"
-        android:textSize="20dp"
-        android:textStyle="bold"/>
+        android:textSize="16dp"/>
 
-</LinearLayout>
+    <Spinner
+        android:id="@+id/resolution_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/fps_label"
+        android:text="@string/fps_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/resolution_label"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/colorAccent"
+        android:layout_alignBaseline="@+id/fps_spinner"
+        android:textSize="16dp"/>
+
+    <Spinner
+        android:id="@+id/fps_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/resolution_spinner"
+        android:layout_marginTop="15dp"/>
+
+</RelativeLayout>

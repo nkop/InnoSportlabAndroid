@@ -50,6 +50,7 @@ public class ClientService{
                  * port, and timeout information.
                  */
                 socket = new Socket();
+                socket.setReuseAddress(true);
                 socket.bind(null);
                 socket.connect((new InetSocketAddress(host, port)), 1024);
                 /**
@@ -69,6 +70,7 @@ public class ClientService{
                 f.createNewFile();
                 InputStream inputstream = socket.getInputStream();
                 copyInputStreamToFile(inputstream, f);
+                ((RemoteActivity)mContext).setFeedback("Video received!", true, 5000);
                 socket.close();
             } catch (IOException e) {
                 System.out.println(e.getMessage());

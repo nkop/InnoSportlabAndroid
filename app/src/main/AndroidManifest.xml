@@ -49,7 +49,9 @@
         <activity
             android:name=".CameraActivity"
             android:noHistory="true" />
-        <activity android:name=".CameraViewActivity" />
+        <activity 
+            android:name=".CameraViewActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".OverviewActivity" />
         <activity

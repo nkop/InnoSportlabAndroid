@@ -12,6 +12,15 @@
     <string name="select_camera">Selecteer een camera</string>
     <string name="refresh_button">Refresh</string>
     <string name="logout">Uitloggen</string>
+    <string name="previewtext">Preview text</string>
+    <string name="searching_camera">Bezig om camera\'s te vinden</string>
+    <string name="peer_discovery_failed">Zoeken gefaald, staat uw Wifi aan?</string>
+    <string name="peer_discovery_succesvol">Zoeken is gelukt!</string>
+    <string name="connection_camera_success">Verbonden met camera</string>
+    <string name="connection_camera_failed">Verbinding met camera gefaald</string>
+    <string name="wifi_direct_support_fail">Uw apparaat ondersteunt geen Wifi-direct</string>
+    <string name="error">Error: </string>
+    <string name="video_received">Video ontvangen</string>
 
     <!--Register strings-->
     <string name="email_hint">E-mail</string>
@@ -31,5 +40,9 @@
 
     <!--Remote strings-->
     <string name="remote_hint">Scan uw RFID band om de opname te beginnen</string>
+
+    <!--Settings strings-->
+    <string name="resolution_label">Resolutie</string>
+    <string name="fps_label">Frames per seconde(fps)</string>
 </resources>
 
