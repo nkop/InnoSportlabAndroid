@@ -27,6 +27,7 @@ public class AnalyseService extends BroadcastReceiver {
     private WifiP2pDnsSdServiceRequest serviceRequest;
     RemoteActivity remoteActivity;
     final HashMap<String, String> cameraServices = new HashMap<String, String>();
+
     public AnalyseService(RemoteActivity act, WifiP2pManager.Channel channelp, WifiP2pManager mgrp, PeerListAdapter plap){
         super();
         remoteActivity = act;
@@ -39,12 +40,12 @@ public class AnalyseService extends BroadcastReceiver {
         wifiP2pManager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                remoteActivity.setFeedback(remoteActivity.getString(R.string.peer_discovery_succesvol), false, 5000);
+                remoteActivity.setFeedback(remoteActivity.getString(R.string.peer_discovery_succesvol), false, 5000, true);
             }
 
             @Override
             public void onFailure(int reasonCode) {
-                remoteActivity.setFeedback(remoteActivity.getString(R.string.peer_discovery_failed), false, 15000);
+                remoteActivity.setFeedback(remoteActivity.getString(R.string.peer_discovery_failed), false, 15000, false);
             }
         });
     }
@@ -58,12 +59,12 @@ public class AnalyseService extends BroadcastReceiver {
             @Override
             public void onSuccess() {
                 isconnected = true;
-                remoteActivity.setFeedback(remoteActivity.getString(R.string.connection_camera_success), false, 5000);
+                remoteActivity.setFeedback(remoteActivity.getString(R.string.connection_camera_success), false, 5000, false);
             }
 
             @Override
             public void onFailure(int reason) {
-                remoteActivity.setFeedback(remoteActivity.getString(R.string.connection_camera_failed), false, 5000);
+                remoteActivity.setFeedback(remoteActivity.getString(R.string.connection_camera_failed), false, 5000, false);
             }
         });
     }
@@ -95,26 +96,27 @@ public class AnalyseService extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
-        switch(action) {
-            case WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION:
-                if (wifiP2pManager != null) {
-                    wifiP2pManager.requestPeers(channel, new WifiP2pManager.PeerListListener() {
-                        @Override
-                        public void onPeersAvailable(WifiP2pDeviceList wifiP2pDeviceList) {
-
-                        }
-                    });
-                    discoverService();
-                    discoverServices();
-                }
-                break;
-            case WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION:
-                if (isconnected) {
-                    wifiP2pManager.requestConnectionInfo(channel, remoteActivity);
-                }
-                break;
-        }
+            String action = intent.getAction();
+            System.out.println("onreceive_1");
+            switch (action) {
+                case WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION:
+                    if (wifiP2pManager != null && remoteActivity.refreshPressed) {
+                        wifiP2pManager.requestPeers(channel, new WifiP2pManager.PeerListListener() {
+                            @Override
+                            public void onPeersAvailable(WifiP2pDeviceList wifiP2pDeviceList) {
+                            }
+                        });
+                        discoverService();
+                        discoverServices();
+                        remoteActivity.refreshPressed = false;
+                    }
+                    break;
+                case WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION:
+                    if (isconnected) {
+                        wifiP2pManager.requestConnectionInfo(channel, remoteActivity);
+                    }
+                    break;
+            }
     }
 
 
@@ -154,12 +156,12 @@ public class AnalyseService extends BroadcastReceiver {
                 new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
-                        remoteActivity.setFeedback(remoteActivity.getString(R.string.cameras_found),true,2000);
+                        remoteActivity.setFeedback(remoteActivity.getString(R.string.cameras_found),true,2000, true);
                     }
 
                     @Override
                     public void onFailure(int code) {
-                        remoteActivity.setFeedback(remoteActivity.getString(R.string.error) + code, false, 15000);
+                        remoteActivity.setFeedback(remoteActivity.getString(R.string.error) + code, false, 15000, false);
                     }
                 });
     }
@@ -169,7 +171,7 @@ public class AnalyseService extends BroadcastReceiver {
 
             @Override
             public void onSuccess() {
-                remoteActivity.setFeedback(remoteActivity.getString(R.string.loading_cameras), false, 3000);
+                remoteActivity.setFeedback(remoteActivity.getString(R.string.loading_cameras), false, 4000, true);
             }
 
             @Override
@@ -190,7 +192,7 @@ public class AnalyseService extends BroadcastReceiver {
                         feedback = remoteActivity.getString(R.string.unknown_error);
                         break;
                 }
-                remoteActivity.setFeedback(feedback, false, 5000);
+                remoteActivity.setFeedback(feedback, false, 5000, false);
             }
         });
     }

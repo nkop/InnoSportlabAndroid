@@ -8,12 +8,18 @@ import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
+import android.widget.TextView;
 import android.widget.VideoView;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +39,14 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
     public Camera camera;
     public static String newVideoPath;
     private HashMap<String, Integer> videoSettings;
+
+
+    //timer settings
+    private long startHTime = 0L;
+    private Handler customHandler = new Handler();
+    long timeInMilliseconds = 0L;
+    long timeSwapBuff = 0L;
+    long updatedTime = 0L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +76,8 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
                 // initialize video camera
                 if (newVideoPath != null) {
                     mediaRecorder.start();
+
+
                     isRecording = true;
                 } else {
                     mediaRecorder.release();
@@ -71,7 +87,6 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
             System.out.println("no camera");
         }
     }
-
 
     private String prepareVideoRecorder() {
         camera = getCameraInstance();
@@ -175,12 +190,13 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
             camera.stopPreview();
             camera.release();
             camera = null;
-            System.out.println(MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED);
-            System.out.println(extra);
-            System.out.println("Camera is done");
             ServerService.VIDEOURI = Uri.fromFile(new File(newVideoPath));
             setResult(5);
             finish();
         }
     }
+
+
+
+
 }
