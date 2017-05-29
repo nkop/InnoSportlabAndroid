@@ -19,8 +19,13 @@
     <string name="connection_camera_success">Verbonden met camera</string>
     <string name="connection_camera_failed">Verbinding met camera gefaald</string>
     <string name="wifi_direct_support_fail">Uw apparaat ondersteunt geen Wifi-direct</string>
-    <string name="error">Error: </string>
+    <string name="error">Error: {error}</string>
+    <string name="cameras_found">Camera('s) gevonden</string>
     <string name="video_received">Video ontvangen</string>
+    <string name="loading_cameras">Gevonden cameras laden</string>
+    <string name="wifi_direct_busy">Wifi direct is bezig</string>
+    <string name="error_searching_cameras">Fout bij zoeken naar cameras, probeer opnieuw</string>
+    <string name="unknown_error">Onbekende fout</string>
 
     <!--Register strings-->
     <string name="email_hint">E-mail</string>

@@ -17,8 +17,8 @@ public class CameraActivity extends AppCompatActivity implements WifiP2pManager.
 
     //Waarom zijn deze static?
     public IntentFilter intentFilter;
-    public WifiP2pManager p2pManager;
-    public WifiP2pManager.Channel p2pManagerChannel;
+    public WifiP2pManager wifiP2pManager;
+    public WifiP2pManager.Channel channel;
     public CameraService cameraService;
 
     @Override
@@ -35,9 +35,9 @@ public class CameraActivity extends AppCompatActivity implements WifiP2pManager.
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-        p2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        p2pManagerChannel = p2pManager.initialize(this, getMainLooper(), null);
-        cameraService = new CameraService(p2pManager, p2pManagerChannel, this);
+        wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+        channel = wifiP2pManager.initialize(this, getMainLooper(), null);
+        cameraService = new CameraService(wifiP2pManager, channel, this);
     }
 
     /* register the broadcast receiver with the intent values to be matched */
@@ -60,7 +60,7 @@ public class CameraActivity extends AppCompatActivity implements WifiP2pManager.
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 

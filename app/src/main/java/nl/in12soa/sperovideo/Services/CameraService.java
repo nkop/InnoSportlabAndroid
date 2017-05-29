@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 
-import java.io.File;
 import java.util.HashMap;
 
 import nl.in12soa.sperovideo.CameraActivity;
@@ -14,36 +13,38 @@ import nl.in12soa.sperovideo.CameraActivity;
 
 public class CameraService extends BroadcastReceiver {
 
-    public WifiP2pManager mManager;
-    public WifiP2pManager.Channel mChannel;
-    private CameraActivity mActivity;
-    public ServerService dataService;
+    public WifiP2pManager wifiP2pManager;
+    public WifiP2pManager.Channel channel;
+    private CameraActivity cameraActivity;
+    public ServerService serverService;
     public WifiP2pDnsSdServiceInfo serviceInfo;
     public CameraService(WifiP2pManager manager, WifiP2pManager.Channel channel,
                          CameraActivity activity) {
         super();
-        this.mManager = manager;
-        this.mChannel = channel;
-        this.mActivity = activity;
+        this.wifiP2pManager = manager;
+        this.channel = channel;
+        this.cameraActivity = activity;
         cleangroup();
     }
 
     //Never used, Ahmad?!😡😡😡😡
     private void cleangroup(){
-        mManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
+        wifiP2pManager.removeGroup(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
+                //TODO feedback
                 System.out.println("Group Removed");
 
             }
 
             @Override
             public void onFailure(int reason) {
-                System.out.println("Group remove failed");
+                    //TODO feedback
+                    System.out.println("Group remove failed");
             }
         });
 
-        mManager.clearLocalServices(mChannel, new WifiP2pManager.ActionListener() {
+        wifiP2pManager.clearLocalServices(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
 
@@ -62,13 +63,13 @@ public class CameraService extends BroadcastReceiver {
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
             if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
-                mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
+                wifiP2pManager.createGroup(channel, new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
                         System.out.println("Group Creation succesfull");
                         startRegistration();
-                        dataService = new ServerService(mActivity);
-                        dataService.execute();
+                        serverService = new ServerService(cameraActivity);
+                        serverService.execute();
                     }
 
                     @Override
@@ -106,7 +107,7 @@ public class CameraService extends BroadcastReceiver {
         // Add the local service, sending the service info, network channel,
         // and listener that will be used to indicate success or failure of
         // the request.
-        mManager.addLocalService(mChannel, serviceInfo, new WifiP2pManager.ActionListener() {
+        wifiP2pManager.addLocalService(channel, serviceInfo, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
                 System.out.println("Service added");

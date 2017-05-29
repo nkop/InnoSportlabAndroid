@@ -32,7 +32,6 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
     public VideoView videoView;
     public Camera camera;
     public static String newVideoPath;
-    private SurfaceHolder surfaceHolder;
     private HashMap<String, Integer> videoSettings;
 
     @Override
@@ -40,7 +39,7 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_view);
         videoView = (VideoView) findViewById(R.id.camera_preview);
-        surfaceHolder = videoView.getHolder();
+        SurfaceHolder surfaceHolder = videoView.getHolder();
         surfaceHolder.addCallback(this);
         videoSettings = new HashMap<>();
         Bundle extras = getIntent().getExtras();
@@ -52,30 +51,24 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
 
 
     private void setCamera() {
-        if (isRecording) {
-            // stop recording and release camera
-            mediaRecorder.stop();  // stop the recording
-            mediaRecorder.release(); // release the MediaRecorder object
-            camera.lock();         // take camera access back from MediaRecorder
-            // inform the user that recording has stopped
-            Uri.fromFile(new File(newVideoPath));
-
-            //TODO CAMERA TERUGSTUREN
-//            mReceiver.sendData(videouri);
-            isRecording = false;
-        } else {
-            // initialize video camera
-            if (newVideoPath != null) {
-                // Camera is available and unlocked, MediaRecorder is prepared,
-                // now you can start recording
-                mediaRecorder.start();
-
-                isRecording = true;
-            } else {
-                // prepare didn't work, release the camera
+        if(checkCameraHardware()) {
+            if (isRecording) {
+                mediaRecorder.stop();
                 mediaRecorder.release();
-                // inform user
+                camera.lock();
+                Uri.fromFile(new File(newVideoPath));
+                isRecording = false;
+            } else {
+                // initialize video camera
+                if (newVideoPath != null) {
+                    mediaRecorder.start();
+                    isRecording = true;
+                } else {
+                    mediaRecorder.release();
+                }
             }
+        }else{
+            System.out.println("no camera");
         }
     }
 
@@ -85,23 +78,22 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         camera.setDisplayOrientation(90);
         mediaRecorder = new MediaRecorder();
 
-        // Step 1: Unlock and set camera to MediaRecorder
         camera.unlock();
         mediaRecorder.setCamera(camera);
         mediaRecorder.setMaxDuration(videoSettings.get("duration"));
         mediaRecorder.setOnInfoListener(this);
-        // Step 2: Set sources
+
+        //settings
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 //        mMediarecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 //        mMediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
 //        mMediarecorder.setVideoFrameRate(videoSettings.get("framerate"));
 //        mMediarecorder.setVideoSize(videoSettings.get("resolution_y"),videoSettings.get("resolution_x"));
-        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
         mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
 
         // Step 4: Set output file
-        String filepath = getOutputMediaFile(MEDIA_TYPE_VIDEO).getAbsolutePath();
+        String filepath = getOutputMediaFile().getAbsolutePath();
         mediaRecorder.setOutputFile(filepath);
 
         // Step 5: Set the preview output
@@ -122,16 +114,10 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         return filepath;
     }
 
-    private File getOutputMediaFile(int type) {
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
+    private File getOutputMediaFile() {
 
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), "MyCameraApp");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-
-        // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 System.out.println("failed to create directory");
@@ -147,17 +133,14 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         return mediaFile;
     }
 
-    /**
-     * A safe way to get an instance of the Camera object.
-     */
     public static Camera getCameraInstance() {
         Camera c = null;
         try {
-            c = Camera.open(); // attempt to get a Camera instance
+            c = Camera.open();
         } catch (Exception e) {
             System.out.println("No camera available");
         }
-        return c; // returns null if camera is unavailable
+        return c;
     }
 
     @Override
@@ -180,21 +163,8 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
 
     }
 
-
-    //check functions
-    //Never used, Ahmad?!😡😡😡😡😡
-
-    /**
-     * Check if this device has a camera
-     */
-    private boolean checkCameraHardware(Context context) {
-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            // this device has a camera
-            return true;
-        } else {
-            // no camera on this device
-            return false;
-        }
+    private boolean checkCameraHardware() {
+        return this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
     }
 
     @Override
