@@ -30,7 +30,7 @@ public class PeerListAdapter extends RecyclerView.Adapter<PeerListAdapter.PeerVi
         }
     }
 
-    public boolean peerExists(Peer peer){
+    private boolean peerExists(Peer peer){
         for(Peer p : peerList){
             if(p.getDevice().deviceAddress.equals(peer.getDevice().deviceAddress)){
                 return true;
@@ -39,6 +39,10 @@ public class PeerListAdapter extends RecyclerView.Adapter<PeerListAdapter.PeerVi
         return false;
     }
 
+    public void empty(){
+        peerList.clear();
+        this.notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() {
         return peerList.size();

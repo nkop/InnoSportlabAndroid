@@ -12,6 +12,7 @@ import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+import nl.in12soa.sperovideo.R;
 import nl.in12soa.sperovideo.RemoteActivity;
 import nl.in12soa.sperovideo.Models.Peer;
 import nl.in12soa.sperovideo.Models.PeerListHandler;
@@ -24,6 +25,7 @@ public class AnalyseService extends BroadcastReceiver {
     public PeerListHandler mPeerHandler;
     public PeerListAdapter pla;
     private boolean isconnected = false;
+    private WifiP2pDnsSdServiceRequest serviceRequest;
     RemoteActivity mActivity;
     final HashMap<String, String> cameraServices = new HashMap<String, String>();
     public AnalyseService(RemoteActivity act, WifiP2pManager.Channel channelp, WifiP2pManager mgrp, PeerListAdapter plap){
@@ -39,13 +41,12 @@ public class AnalyseService extends BroadcastReceiver {
         mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                System.out.println("Peer discovery successful");
-
+                mActivity.setFeedback(mActivity.getString(R.string.peer_discovery_succesvol), false, 5000);
             }
 
             @Override
             public void onFailure(int reasonCode) {
-                System.out.println("Peer discovery failed");
+                mActivity.setFeedback(mActivity.getString(R.string.peer_discovery_failed), false, 15000);
             }
         });
     }
@@ -59,12 +60,38 @@ public class AnalyseService extends BroadcastReceiver {
             @Override
             public void onSuccess() {
                 isconnected = true;
+                mActivity.setFeedback(mActivity.getString(R.string.connection_camera_success), false, 5000);
 //                System.out.println("Connected to device");
             }
 
             @Override
             public void onFailure(int reason) {
-                System.out.println("Connection failed to device");
+                mActivity.setFeedback(mActivity.getString(R.string.connection_camera_failed), false, 5000);
+            }
+        });
+    }
+
+    public void disconnect(){
+        mManager.removeServiceRequest(mChannel, serviceRequest, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure(int reason) {
+
+            }
+        });
+        mManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure(int reason) {
+
             }
         });
     }
@@ -131,7 +158,7 @@ public class AnalyseService extends BroadcastReceiver {
         };
 
         mManager.setDnsSdResponseListeners(mChannel, servListener, txtListener);
-        WifiP2pDnsSdServiceRequest serviceRequest = WifiP2pDnsSdServiceRequest.newInstance();
+        serviceRequest = WifiP2pDnsSdServiceRequest.newInstance();
         mManager.addServiceRequest(mChannel,
                 serviceRequest,
                 new WifiP2pManager.ActionListener() {
@@ -143,7 +170,7 @@ public class AnalyseService extends BroadcastReceiver {
 
                     @Override
                     public void onFailure(int code) {
-                        System.out.println("Error" + code);
+                        mActivity.setFeedback(mActivity.getString(R.string.error) + code, false, 15000);
                     }
                 });
     }
@@ -161,7 +188,7 @@ public class AnalyseService extends BroadcastReceiver {
             public void onFailure(int code) {
                 // Command failed.  Check for P2P_UNSUPPORTED, ERROR, or BUSY
                 if (code == WifiP2pManager.P2P_UNSUPPORTED) {
-                    System.out.println("p2p no support");
+                    mActivity.setFeedback("wifi_direct_support_fail", false, 5000);
                 }
             }
         });
