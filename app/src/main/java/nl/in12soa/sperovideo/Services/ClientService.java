@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import nl.in12soa.sperovideo.R;
 import nl.in12soa.sperovideo.RemoteActivity;
 
 /**
@@ -70,7 +71,6 @@ public class ClientService{
                 f.createNewFile();
                 InputStream inputstream = socket.getInputStream();
                 copyInputStreamToFile(inputstream, f);
-                ((RemoteActivity)mContext).setFeedback("Video received!", true, 5000);
                 socket.close();
             } catch (IOException e) {
                 System.out.println(e.getMessage());
@@ -88,7 +88,10 @@ public class ClientService{
             FileOutputStream fileOutputStream = new FileOutputStream(f);
             byte[] buf = new byte[1024];
             int len;
+            int size = 0;
             while((len=in.read(buf))>0){
+                size += len;
+                ((RemoteActivity)mContext).setFeedback(mContext.getString(R.string.video_received, (size/1048576)), true, 5000, false);
                 fileOutputStream.write(buf,0,len);
             }
             fileOutputStream.close();

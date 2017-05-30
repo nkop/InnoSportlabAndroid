@@ -30,15 +30,6 @@ public class Peer {
         this.name = name;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    //Never used method, Ahmad?!😠😠😠😠😠
-    public void setDevice(WifiP2pDevice device) {
-        this.device = device;
-    }
-
     public WifiP2pDevice getDevice() {
         return device;
     }

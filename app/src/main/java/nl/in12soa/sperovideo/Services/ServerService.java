@@ -27,9 +27,9 @@ import nl.in12soa.sperovideo.CameraViewActivity;
 public class ServerService extends AsyncTask<Void, Void, Void> {
 
     private CameraActivity mActivity;
-    ServerSocket serverSocket;
+    private ServerSocket serverSocket;
     private static final int CAMERA_RESULT = 5;
-    HashMap<String, Socket> clientmap;
+    private HashMap<String, Socket> clientmap;
     public static Uri VIDEOURI;
     public ServerService(CameraActivity actp){
         mActivity = actp;

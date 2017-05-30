@@ -65,17 +65,17 @@ public class PeerListAdapter extends RecyclerView.Adapter<PeerListAdapter.PeerVi
             @Override
             public void onClick(View v) {
                 Peer peer = peerList.get(index);
-                remoteActivity.mReceiver.connect(peer.getDevice());
+                remoteActivity.broadcastReceiver.connect(peer.getDevice());
             }
         });
         return new PeerViewHolder(itemView);
     }
 
-    public static class PeerViewHolder extends RecyclerView.ViewHolder {
-        protected TextView peername;
-        protected TextView peertype;
+    static class PeerViewHolder extends RecyclerView.ViewHolder {
+        TextView peername;
+        TextView peertype;
 
-        public PeerViewHolder(View v) {
+        PeerViewHolder(View v) {
             super(v);
             peername =  (TextView) v.findViewById(R.id.tv_peername);
             peertype = (TextView)  v.findViewById(R.id.tv_peertype);

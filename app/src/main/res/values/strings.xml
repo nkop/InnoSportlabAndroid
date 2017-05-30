@@ -6,8 +6,13 @@
     <string name="analyse">Analyse</string>
     <string name="camera">Camera</string>
 
-    <string name="scan_chip_or_manual">Scan chip of start manueel</string>
 
+    <!--camera string-->
+    <string name="scan_chip_or_manual">Scan chip of start manueel</string>
+    <string name="connected">Verbonden met %1$s</string>
+    <string name="camera_service_started">Camera service gestart</string>
+    <string name="camera_service_failed">Camera servicefout, probeer opnieuw</string>
+    <string name="wifi_direct_n_a">Wifi-direct niet beschikbaar</string>
     <!--Analyse strings-->
     <string name="select_camera">Selecteer een camera</string>
     <string name="refresh_button">Refresh</string>
@@ -20,7 +25,14 @@
     <string name="connection_camera_failed">Verbinding met camera gefaald</string>
     <string name="wifi_direct_support_fail">Uw apparaat ondersteunt geen Wifi-direct</string>
     <string name="error">Error: </string>
-    <string name="video_received">Video ontvangen</string>
+    <string name="video_recording">Bezig met video-opname</string>
+    <string name="cameras_found">Camera(\'s) gevonden</string>
+    <string name="video_received">Bezig met verwerken van video %1$d MB</string>
+    <string name="loading_cameras">Gevonden cameras laden</string>
+    <string name="wifi_direct_busy">Wifi direct is bezig</string>
+    <string name="error_searching_cameras">Fout bij zoeken naar cameras, probeer opnieuw</string>
+    <string name="unknown_error">Onbekende fout</string>
+    <string name="playing_video">Video aan het afspelen</string>
 
     <!--Register strings-->
     <string name="email_hint">E-mail</string>

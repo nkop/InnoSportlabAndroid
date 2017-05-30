@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import nl.in12soa.sperovideo.Services.ActionBarService;
 import nl.in12soa.sperovideo.Services.CameraService;
@@ -17,15 +18,15 @@ public class CameraActivity extends AppCompatActivity implements WifiP2pManager.
 
     //Waarom zijn deze static?
     public IntentFilter intentFilter;
-    public WifiP2pManager p2pManager;
-    public WifiP2pManager.Channel p2pManagerChannel;
+    public WifiP2pManager wifiP2pManager;
+    public WifiP2pManager.Channel channel;
     public CameraService cameraService;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         ActionBarService.setActionBarTitle(R.string.camera, getSupportActionBar());
+        setFeedback(getString(R.string.scan_chip_or_manual));
         setReceiver();
     }
 
@@ -35,9 +36,9 @@ public class CameraActivity extends AppCompatActivity implements WifiP2pManager.
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-        p2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        p2pManagerChannel = p2pManager.initialize(this, getMainLooper(), null);
-        cameraService = new CameraService(p2pManager, p2pManagerChannel, this);
+        wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+        channel = wifiP2pManager.initialize(this, getMainLooper(), null);
+        cameraService = new CameraService(wifiP2pManager, channel, this);
     }
 
     /* register the broadcast receiver with the intent values to be matched */
@@ -55,12 +56,11 @@ public class CameraActivity extends AppCompatActivity implements WifiP2pManager.
 
     @Override
     public void onConnectionInfoAvailable(WifiP2pInfo info) {
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 
@@ -81,5 +81,10 @@ public class CameraActivity extends AppCompatActivity implements WifiP2pManager.
                 return (true);
         }
         return (super.onOptionsItemSelected(item));
+    }
+
+    public void setFeedback(String feedback){
+        TextView textviewFeedback = (TextView)findViewById(R.id.camera_feedback);
+        textviewFeedback.setText(feedback);
     }
 }
