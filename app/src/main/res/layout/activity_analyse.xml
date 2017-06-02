@@ -50,6 +50,16 @@
         android:indeterminateDrawable="@drawable/circular_progress_bar"
         android:id="@+id/pb_feedback" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_camera_button"
+        android:text="Start Camera"
+        android:layout_above="@+id/tv_feedback"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/colorAccent"
+        />
+
     <TextView
         android:text="@string/previewtext"
         android:visibility="invisible"

@@ -53,6 +53,8 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
         setContentView(R.layout.activity_analyse);
         peerListAdapter = new PeerListAdapter(new ArrayList<Peer>(), this);
         preferences = getSharedPreferences(PREFS, 0);
+        (findViewById(R.id.start_camera_button)).setEnabled(false);
+
         setReceiver();
         setListeners();
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -87,6 +89,16 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                 broadcastReceiver.peerDiscovery();
             }
         });
+        (findViewById(R.id.start_camera_button)).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (cameraSelected) {
+                    setFeedback(getString(R.string.video_recording), true, 0, false);
+                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", "24") + ", \"resolution_y\" : " + preferences.getString("ResolutionY", "480") + ", \"resolution_x\" : " + preferences.getString("resolutionX", "640") + ", \"duration\" : 10000 } }");
+                }
+            }
+        });
     }
 
     @Override
@@ -100,6 +112,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                 e.printStackTrace();
             }
             cameraSelected = true;
+            (findViewById(R.id.start_camera_button)).setEnabled(true);
         }
     }
 
@@ -107,7 +120,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
         final boolean showloading = shl;
         final String value = text;
         final int duration = dur;
-        final TextView feedbacktv  = (TextView)findViewById(R.id.tv_feedback);
+        final TextView feedbacktv = (TextView) findViewById(R.id.tv_feedback);
         final View feedbackpb = findViewById(R.id.pb_feedback);
 
         runOnUiThread(new Runnable() {
@@ -128,7 +141,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                     }
                 };
                 handler = new Handler();
-                if(end) {
+                if (end) {
                     handler.postDelayed(hideRunnable, duration);
                 }
             }
@@ -225,7 +238,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                 }
                 if (cameraSelected) {
                     setFeedback(getString(R.string.video_recording), true, 0, false);
-                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", "24") + ", \"resolution_y\" : " + preferences.getString("ResolutionY", "480") + ", \"resolution_x\" : " + preferences.getString("resolutionX", "640")  + ", \"duration\" : 10000 } }");
+                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", "24") + ", \"resolution_y\" : " + preferences.getString("ResolutionY", "480") + ", \"resolution_x\" : " + preferences.getString("resolutionX", "640") + ", \"duration\" : 10000 } }");
                 }
             }
 
