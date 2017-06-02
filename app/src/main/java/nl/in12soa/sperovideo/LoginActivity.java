@@ -1,6 +1,7 @@
 package nl.in12soa.sperovideo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,6 +36,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
 
     private String id;
+    private String emailString;
+    private String rfid;
 
     private Map<String, String> params = new HashMap<>();
 
@@ -43,7 +46,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
+
         ActionBarService.setActionBarTitle(R.string.login, getSupportActionBar());
 
         email = (EditText)findViewById(R.id.email_input_login);
@@ -51,6 +56,14 @@ public class LoginActivity extends AppCompatActivity {
         spinner = (ProgressBar) findViewById(R.id.login_spinner);
         loginButton = (Button) findViewById(R.id.login_button);
         spinner.setVisibility(View.GONE);
+
+        SharedPreferences settings = getApplicationContext().getSharedPreferences("SPEROVIDEO", 0);
+        if(settings.getString("id", null) != null) {
+            Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
+            intent.putExtra("userID", id);
+            startActivity(intent);
+            enableLogin();
+        }
     }
 
     public void doLogin(View v)
@@ -69,12 +82,21 @@ public class LoginActivity extends AppCompatActivity {
                             {
                                 try{
                                     id = response.getString("_id");
+                                    emailString = response.getString("email");
+                                    rfid = response.getString("rfid");
                                 }
                                 catch(Exception e)
                                 {
                                     Toast.makeText(getApplicationContext(), "Ophalen gegevens mislukt. Probeer het later opnieuw", Toast.LENGTH_LONG).show();
                                     e.printStackTrace();
                                 }
+                                SharedPreferences settings = getApplicationContext().getSharedPreferences("SPEROVIDEO", 0);
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.putString("id", id);
+                                editor.putString("email", emailString);
+                                editor.putString("rfid", rfid);
+                                editor.apply();
+
                                 Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
                                 intent.putExtra("userID", id);
                                 startActivity(intent);

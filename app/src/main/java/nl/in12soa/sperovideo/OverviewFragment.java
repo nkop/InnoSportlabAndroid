@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -52,10 +53,13 @@ public class OverviewFragment extends Fragment {
         getVideos();
 
         videoArray = new ArrayList<>();
-        for(int i = 0; i < videoLocalArray.length; i++)
-        {
-            Video video = new Video("1", videoLocalArray[i].getAbsolutePath(), "322332", "321132");
-            videoArray.add(video);
+        if (videoLocalArray != null) {
+            for (int i = 0; i < videoLocalArray.length; i++) {
+                Video video = new Video("1", videoLocalArray[i].getAbsolutePath(), "322332", "321132");
+                videoArray.add(video);
+            }
+        } else {
+            Toast.makeText(getActivity().getApplicationContext(), "There are no videos yet.", Toast.LENGTH_LONG).show();
         }
 
         videoAdapter = new VideoAdapter(getActivity().getApplicationContext(), videoArray);
@@ -92,6 +96,9 @@ public class OverviewFragment extends Fragment {
         try {
             String path = Environment.getExternalStorageDirectory() + "/" + getActivity().getApplicationContext().getPackageName();
             File dir = new File(path);
+            if (!dir.isDirectory()) {
+                dir.mkdir();
+            }
             videoLocalArray = dir.listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File file) {
