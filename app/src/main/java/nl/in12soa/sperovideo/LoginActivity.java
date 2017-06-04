@@ -1,6 +1,7 @@
 package nl.in12soa.sperovideo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,8 +34,12 @@ public class LoginActivity extends AppCompatActivity {
     private EditText password;
     private ProgressBar spinner;
     private Button loginButton;
+    private SharedPreferences settings;
+    private Intent overviewIntent;
 
     private String id;
+    private String emailString;
+    private String rfid;
 
     private Map<String, String> params = new HashMap<>();
 
@@ -44,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         ActionBarService.setActionBarTitle(R.string.login, getSupportActionBar());
 
         email = (EditText)findViewById(R.id.email_input_login);
@@ -51,6 +57,15 @@ public class LoginActivity extends AppCompatActivity {
         spinner = (ProgressBar) findViewById(R.id.login_spinner);
         loginButton = (Button) findViewById(R.id.login_button);
         spinner.setVisibility(View.GONE);
+
+        settings = getApplicationContext().getSharedPreferences("SPEROVIDEO", 0);
+        overviewIntent = new Intent(getApplicationContext(), OverviewActivity.class);
+
+        if(settings.getString("id", null) != null) {
+            overviewIntent.putExtra("userID", id);
+            startActivity(overviewIntent);
+            enableLogin();
+        }
     }
 
     public void doLogin(View v)
@@ -69,15 +84,22 @@ public class LoginActivity extends AppCompatActivity {
                             {
                                 try{
                                     id = response.getString("_id");
+                                    emailString = response.getString("email");
+                                    rfid = response.getString("rfid");
                                 }
                                 catch(Exception e)
                                 {
                                     Toast.makeText(getApplicationContext(), "Ophalen gegevens mislukt. Probeer het later opnieuw", Toast.LENGTH_LONG).show();
                                     e.printStackTrace();
                                 }
-                                Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
-                                intent.putExtra("userID", id);
-                                startActivity(intent);
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.putString("id", id);
+                                editor.putString("email", emailString);
+                                editor.putString("rfid", rfid);
+                                editor.apply();
+
+                                overviewIntent.putExtra("userID", id);
+                                startActivity(overviewIntent);
                                 params.clear();
                                 enableLogin();
                             }

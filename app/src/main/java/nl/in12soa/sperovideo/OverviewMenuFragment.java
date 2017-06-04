@@ -2,6 +2,7 @@ package nl.in12soa.sperovideo;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,8 +24,7 @@ public class OverviewMenuFragment extends Fragment {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+                logout();
             }
         });
 
@@ -37,5 +37,18 @@ public class OverviewMenuFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void logout()
+    {
+        SharedPreferences settings = getActivity().getApplicationContext().getSharedPreferences("SPEROVIDEO", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.remove("id");
+        editor.remove("email");
+        editor.remove("rfid");
+        editor.apply();
+
+        Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
 }
