@@ -34,6 +34,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText password;
     private ProgressBar spinner;
     private Button loginButton;
+    private SharedPreferences settings;
+    private Intent overviewIntent;
 
     private String id;
     private String emailString;
@@ -46,7 +48,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_login);
 
         ActionBarService.setActionBarTitle(R.string.login, getSupportActionBar());
@@ -57,11 +58,12 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = (Button) findViewById(R.id.login_button);
         spinner.setVisibility(View.GONE);
 
-        SharedPreferences settings = getApplicationContext().getSharedPreferences("SPEROVIDEO", 0);
+        settings = getApplicationContext().getSharedPreferences("SPEROVIDEO", 0);
+        overviewIntent = new Intent(getApplicationContext(), OverviewActivity.class);
+
         if(settings.getString("id", null) != null) {
-            Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
-            intent.putExtra("userID", id);
-            startActivity(intent);
+            overviewIntent.putExtra("userID", id);
+            startActivity(overviewIntent);
             enableLogin();
         }
     }
@@ -90,16 +92,14 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Ophalen gegevens mislukt. Probeer het later opnieuw", Toast.LENGTH_LONG).show();
                                     e.printStackTrace();
                                 }
-                                SharedPreferences settings = getApplicationContext().getSharedPreferences("SPEROVIDEO", 0);
                                 SharedPreferences.Editor editor = settings.edit();
                                 editor.putString("id", id);
                                 editor.putString("email", emailString);
                                 editor.putString("rfid", rfid);
                                 editor.apply();
 
-                                Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
-                                intent.putExtra("userID", id);
-                                startActivity(intent);
+                                overviewIntent.putExtra("userID", id);
+                                startActivity(overviewIntent);
                                 params.clear();
                                 enableLogin();
                             }
