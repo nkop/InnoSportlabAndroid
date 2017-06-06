@@ -47,8 +47,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CameraActivity"
-            android:noHistory="true" />
+            android:name=".CameraActivity" />
         <activity 
             android:name=".CameraViewActivity"
             android:screenOrientation="portrait"/>
