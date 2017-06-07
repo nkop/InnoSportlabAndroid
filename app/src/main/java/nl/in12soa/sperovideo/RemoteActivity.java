@@ -15,15 +15,10 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -38,68 +33,70 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
 
     private NfcAdapter nfcAdapter;
 
-    WifiP2pManager mManager;
-    WifiP2pManager.Channel mChannel;
-    PeerListAdapter pla;
-    IntentFilter mIntentFilter;
-    AnalyseService mReceiver;
-    LinearLayoutManager mLinearLayoutManager;
-    RecyclerView rv_peerlist;
+    private PeerListAdapter peerListAdapter;
+    IntentFilter intentFilter;
+    AnalyseService broadcastReceiver;
+    RecyclerView recyclerView;
     ClientService clientService;
     Boolean cameraSelected;
 
     public static final String PREFS = "CameraSettings";
     public SharedPreferences preferences;
-    public TextView feedbacktv;
-    public ProgressBar feedbackpb;
-    public SurfaceView vw1;
-    public SurfaceHolder vw1_holder;
-    private MediaPlayer mp;
+    public SurfaceHolder surfaceHolder;
     Handler handler;
     Runnable hideRunnable;
+    public boolean refreshPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analyse);
-        feedbackpb = (ProgressBar) findViewById(R.id.pb_feedback);
-        feedbacktv = (TextView) findViewById(R.id.tv_feedback);
-        pla = new PeerListAdapter(new ArrayList<Peer>(), this);
+        peerListAdapter = new PeerListAdapter(new ArrayList<Peer>(), this);
         preferences = getSharedPreferences(PREFS, 0);
+        (findViewById(R.id.start_camera_button)).setEnabled(false);
+
         setReceiver();
         setListeners();
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         ActionBarService.setActionBarTitle(R.string.remote, getSupportActionBar());
         cameraSelected = false;
-
-        vw1 = (SurfaceView) findViewById(R.id.surface_view);
-        vw1_holder = vw1.getHolder();
-        rv_peerlist = (RecyclerView) findViewById(R.id.rv_peerlist);
-        mLinearLayoutManager = new LinearLayoutManager(this);
-        rv_peerlist.setLayoutManager(mLinearLayoutManager);
-        rv_peerlist.setAdapter(pla);
+        surfaceHolder = ((SurfaceView) findViewById(R.id.surface_view)).getHolder();
+        recyclerView = (RecyclerView) findViewById(R.id.rv_peerlist);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(peerListAdapter);
         clientService = new ClientService(this);
 
 
     }
 
     private void setReceiver() {
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        mChannel = mManager.initialize(this, getMainLooper(), null);
-        mReceiver = new AnalyseService(this, mChannel, mManager, pla);
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+        WifiP2pManager wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+        WifiP2pManager.Channel channel = wifiP2pManager.initialize(this, getMainLooper(), null);
+        broadcastReceiver = new AnalyseService(this, channel, wifiP2pManager, peerListAdapter);
     }
 
     private void setListeners() {
         (findViewById(R.id.refresh_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setFeedback(getString(R.string.searching_camera), true, 5000);
-                mReceiver.peerDiscovery();
+                setFeedback(getString(R.string.searching_camera), true, 5000, true);
+                refreshPressed = true;
+                broadcastReceiver.peerDiscovery();
+            }
+        });
+        (findViewById(R.id.start_camera_button)).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (cameraSelected) {
+                    setFeedback(getString(R.string.video_recording), true, 0, false);
+                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", "24") + ", \"resolution_y\" : " + preferences.getString("ResolutionY", "480") + ", \"resolution_x\" : " + preferences.getString("resolutionX", "640") + ", \"duration\" : 10000 } }");
+                }
             }
         });
     }
@@ -115,15 +112,17 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                 e.printStackTrace();
             }
             cameraSelected = true;
-            //setFeedback("Recording video", true, 8000);
-            //clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : 30, \"resolution_y\" : 640, \"resolution_x\" : 480, \"duration\" : 10000 } }");
+            (findViewById(R.id.start_camera_button)).setEnabled(true);
         }
     }
 
-    public void setFeedback(String text, boolean shl, final int dur) {
+    public void setFeedback(String text, boolean shl, int dur, final boolean end) {
         final boolean showloading = shl;
         final String value = text;
         final int duration = dur;
+        final TextView feedbacktv = (TextView) findViewById(R.id.tv_feedback);
+        final View feedbackpb = findViewById(R.id.pb_feedback);
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -138,49 +137,58 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                 hideRunnable = new Runnable() {
                     @Override
                     public void run() {
-                        hideFeedback();
+                        hideFeedback(feedbackpb, feedbacktv);
                     }
                 };
                 handler = new Handler();
-                handler.postDelayed(hideRunnable, duration);
+                if (end) {
+                    handler.postDelayed(hideRunnable, duration);
+                }
             }
         });
 
     }
 
-    public void hideFeedback() {
+    public void hideFeedback(View feedbackpb, View feedbacktv) {
         feedbackpb.setVisibility(View.INVISIBLE);
         feedbacktv.setVisibility(View.INVISIBLE);
     }
 
     public void disconnect() {
-        mReceiver.disconnect();
+        broadcastReceiver.disconnect();
         cameraSelected = false;
     }
 
     public void playVideo(Uri videoPath) {
         try {
-            mp = new MediaPlayer();
-            mp.setDataSource(getApplicationContext(), videoPath);
-            mp.prepare();
-            mp.setDisplay(vw1_holder);
+            final MediaPlayer mediaPlayer = new MediaPlayer();
+            mediaPlayer.setDataSource(getApplicationContext(), videoPath);
+            mediaPlayer.prepare();
+            mediaPlayer.setDisplay(surfaceHolder);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    pla.empty();
+                    peerListAdapter.empty();
                 }
             });
             disconnect();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    mediaPlayer.reset();
+                }
+            });
+            setFeedback(getString(R.string.playing_video), true, mediaPlayer.getDuration(), true);
+            mediaPlayer.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mp.start();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(mReceiver, mIntentFilter);
+        registerReceiver(broadcastReceiver, intentFilter);
         enableForegroundDispatchSystem();
     }
 
@@ -188,7 +196,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mReceiver);
+        unregisterReceiver(broadcastReceiver);
         disableForegroundDispatchSystem();
     }
 
@@ -229,12 +237,13 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                     serialstring += x + ' ';
                 }
                 if (cameraSelected) {
-                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", null) + ", \"resolution_y\" : " + preferences.getString("ResolutionY", null) + ", \"resolution_x\" : " + preferences.getString("resolutionX", null)  + ", \"duration\" : 10000 } }");
+                    setFeedback(getString(R.string.video_recording), true, 0, false);
+                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", "24") + ", \"resolution_y\" : " + preferences.getString("ResolutionY", "480") + ", \"resolution_x\" : " + preferences.getString("resolutionX", "640") + ", \"duration\" : 10000 } }");
                 }
             }
 
         } else {
-            setFeedback("This device does not support NFC", true, 8000);
+            setFeedback("This device does not support NFC", true, 0, false);
         }
     }
 }
