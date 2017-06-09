@@ -1,6 +1,7 @@
 package nl.in12soa.sperovideo;
 
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.Button;
 
 public class OverviewMenuFragment extends Fragment {
 
+    private Button switchListButton;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -20,6 +22,7 @@ public class OverviewMenuFragment extends Fragment {
 
         Button logoutButton = (Button) view.findViewById(R.id.logout_button);
         Button remoteButton = (Button) view.findViewById(R.id.remote_button_analyse);
+        switchListButton = (Button) view.findViewById(R.id.switch_list_button);
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,6 +36,37 @@ public class OverviewMenuFragment extends Fragment {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), RemoteActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        switchListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(switchListButton.getText().equals("Online video's"))
+                {
+                    OverviewOnlineFragment onlineFragment = new OverviewOnlineFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                    transaction.replace(R.id.overview_fragment, onlineFragment);
+                    transaction.addToBackStack(null);
+
+                    transaction.commit();
+
+                    switchListButton.setText("Lokale video's");
+                }
+                else{
+                    OverviewFragment localFragment = new OverviewFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                    transaction.replace(R.id.overview_fragment, localFragment);
+                    transaction.addToBackStack(null);
+
+                    transaction.commit();
+
+                    switchListButton.setText("Online video's");
+                }
+
             }
         });
 

@@ -3,7 +3,6 @@ package nl.in12soa.sperovideo;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,6 +29,7 @@ import nl.in12soa.sperovideo.Services.ApiService;
 public class VideoAnalyseActivity extends AppCompatActivity {
 
     private String filePath;
+    private String videoID;
     private VideoView videoView;
     private MediaController mediaController;
     private String addTagUrl;
@@ -44,13 +44,26 @@ public class VideoAnalyseActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         filePath = intent.getStringExtra("filePath");
+        videoID = intent.getStringExtra("id");
+
+
         videoView = (VideoView) findViewById(R.id.videoView);
 
         if (mediaController == null) {
             mediaController = new MediaController(VideoAnalyseActivity.this);
         }
 
-        Uri uri = Uri.parse(filePath);
+        Uri uri;
+        if(filePath != null)
+        {
+            uri = Uri.parse(filePath);
+        }
+        else
+        {
+            String url = "http://innosportlab.herokuapp.com/videos/" + videoID + "/video";
+            uri = Uri.parse(url);
+        }
+
         mediaController.setAnchorView(videoView);
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(uri);

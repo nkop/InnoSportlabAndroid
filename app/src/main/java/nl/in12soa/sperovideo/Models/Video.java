@@ -1,7 +1,5 @@
 package nl.in12soa.sperovideo.Models;
 
-import java.util.Date;
-
 /**
  * Created by Wouter on 18-5-2017.
  */

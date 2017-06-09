@@ -4,7 +4,6 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import nl.in12soa.sperovideo.Models.Video;
 import nl.in12soa.sperovideo.Services.ActionBarService;
@@ -33,9 +32,9 @@ public class OverviewActivity extends AppCompatActivity implements OverviewFragm
 
     @Override
     public void onItemSelected(Video video) {
-//        Toast.makeText(getApplicationContext(), "Sporter: " + video.sporter, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getApplicationContext(), VideoAnalyseActivity.class);
         intent.putExtra("filePath", video.filePath);
+        intent.putExtra("id", video._id);
         startActivity(intent);
     }
 }
