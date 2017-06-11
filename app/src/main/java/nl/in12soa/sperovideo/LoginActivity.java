@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -125,6 +126,11 @@ public class LoginActivity extends AppCompatActivity {
                     });
 
             //Add this JSON object request to the requestQueue of the api
+            jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    60000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
             ApiService.getInstance(getApplicationContext()).addToRequestQueue(jsObjRequest);
         }
         else
