@@ -43,30 +43,20 @@ public class OverviewMenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                Fragment replaceFragment;
                 if(switchListButton.getText().equals("Online video's"))
                 {
-                    OverviewOnlineFragment onlineFragment = new OverviewOnlineFragment();
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                    transaction.replace(R.id.overview_fragment, onlineFragment);
-                    transaction.addToBackStack(null);
-
-                    transaction.commit();
-
+                    replaceFragment = new OverviewOnlineFragment();
                     switchListButton.setText("Lokale video's");
                 }
                 else{
-                    OverviewFragment localFragment = new OverviewFragment();
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                    transaction.replace(R.id.overview_fragment, localFragment);
-                    transaction.addToBackStack(null);
-
-                    transaction.commit();
-
+                    replaceFragment = new OverviewFragment();
                     switchListButton.setText("Online video's");
                 }
-
+                transaction.replace(R.id.overview_fragment, replaceFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 
