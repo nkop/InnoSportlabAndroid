@@ -50,19 +50,11 @@ public class OverviewFragment extends Fragment {
             userID = sharedPreferences.getString("id", null);
         }
         getVideosURL = "http://innosportlab.herokuapp.com/users/" + userID + "/videos";
-        videoArray = new ArrayList<>();
-
         getVideos();
+/*
 //        online = false;
         if (!OverviewActivity.ONLINE) {
-            if (videoLocalArray != null) {
-                for (int i = 0; i < videoLocalArray.length; i++) {
-                    Video video = new Video("1", videoLocalArray[i].getAbsolutePath(), null, null);
-                    videoArray.add(video);
-                }
-            } else {
-                Toast.makeText(getActivity().getApplicationContext(), "There are no videos yet.", Toast.LENGTH_LONG).show();
-            }
+
         }
 
         videoAdapter = new VideoAdapter(getActivity().getApplicationContext(), videoArray);
@@ -79,6 +71,7 @@ public class OverviewFragment extends Fragment {
                 };
 
         listView.setOnItemClickListener(mMessageClickedHandler);
+*/
 
         return view;
     }
@@ -95,6 +88,8 @@ public class OverviewFragment extends Fragment {
     }
 
     public void getVideos() {
+        videoArray = new ArrayList<>();
+        videoArray.clear();
         if (!OverviewActivity.ONLINE) {
             try {
                 String path = Environment.getExternalStorageDirectory() + "/" + getActivity().getApplicationContext().getPackageName();
@@ -116,7 +111,15 @@ public class OverviewFragment extends Fragment {
                         }
                     }
                 });
-
+                if (videoLocalArray != null) {
+                    for (int i = 0; i < videoLocalArray.length; i++) {
+                        Video video = new Video("1", videoLocalArray[i].getAbsolutePath(), null, null);
+                        videoArray.add(video);
+                    }
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), "There are no videos yet.", Toast.LENGTH_LONG).show();
+                }
+                setVideoAdapter(videoArray);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -126,7 +129,6 @@ public class OverviewFragment extends Fragment {
                 @Override
                 public void onResponse(String response) {
                     try {
-                        videoArray = new ArrayList<>();
                         JSONArray jsonArray = new JSONArray(response);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject responseJSON = jsonArray.getJSONObject(i);
@@ -136,21 +138,8 @@ public class OverviewFragment extends Fragment {
                             Video video = new Video(id, null, sporter, date);
                             videoArray.add(video);
                         }
+                        setVideoAdapter(videoArray);
 
-                        videoAdapter = new VideoAdapter(getActivity().getApplicationContext(), videoArray);
-                        ListView listView = (ListView) view.findViewById(R.id.video_list);
-                        videoAdapter.notifyDataSetChanged();
-                        listView.setAdapter(videoAdapter);
-
-                        AdapterView.OnItemClickListener mMessageClickedHandler = new
-                                AdapterView.OnItemClickListener() {
-                                    public void onItemClick(AdapterView parent, View v, int position, long id) {
-                                        Video video = videoAdapter.getItem(position);
-                                        listener.onItemSelected(video);
-                                    }
-                                };
-
-                        listView.setOnItemClickListener(mMessageClickedHandler);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -172,6 +161,24 @@ public class OverviewFragment extends Fragment {
             //Add this JSON object request to the requestQueue of the api
             ApiService.getInstance(getActivity().getApplicationContext()).addToRequestQueue(stringRequest);
         }
+    }
+
+    public void setVideoAdapter(ArrayList<Video> videoArray)
+    {
+        videoAdapter = new VideoAdapter(getActivity().getApplicationContext(), videoArray);
+        ListView listView = (ListView) view.findViewById(R.id.video_list);
+        videoAdapter.notifyDataSetChanged();
+        listView.setAdapter(videoAdapter);
+
+        AdapterView.OnItemClickListener mMessageClickedHandler = new
+                AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView parent, View v, int position, long id) {
+                        Video video = videoAdapter.getItem(position);
+                        listener.onItemSelected(video);
+                    }
+                };
+
+        listView.setOnItemClickListener(mMessageClickedHandler);
     }
 
     private boolean checkFileExtension(File fileName) {

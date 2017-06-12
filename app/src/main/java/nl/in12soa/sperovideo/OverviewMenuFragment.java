@@ -47,7 +47,8 @@ public class OverviewMenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if(switchListButton.getText().equals("Online video's"))
+                //if(switchListButton.getText().equals("Online video's"))
+                if(!overviewActivity.ONLINE)
                 {
                     overviewActivity.setOnline(true);
                     switchListButton.setText("Offline video's");
