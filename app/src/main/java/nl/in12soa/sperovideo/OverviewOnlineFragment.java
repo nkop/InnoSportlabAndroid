@@ -2,7 +2,7 @@ package nl.in12soa.sperovideo;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +37,6 @@ public class OverviewOnlineFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         view = inflater.inflate(R.layout.overview_fragment_online, container, false);
 
         // check if user just logged in or if stored in localStorage

@@ -1,6 +1,6 @@
 package nl.in12soa.sperovideo;
 
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import nl.in12soa.sperovideo.Services.ActionBarService;
 public class OverviewActivity extends AppCompatActivity implements OverviewFragment.OnItemSelectedListener {
 
     private boolean hasOnePane;
+    public static boolean ONLINE = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +24,7 @@ public class OverviewActivity extends AppCompatActivity implements OverviewFragm
 
         if (hasOnePane)
         {
-            FragmentManager fm = getFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             if (fm.findFragmentByTag("list") == null)
             {
                 fm.beginTransaction().add(R.id.framelayout, new OverviewFragment(), "list").commit();
@@ -37,4 +39,11 @@ public class OverviewActivity extends AppCompatActivity implements OverviewFragm
         intent.putExtra("id", video._id);
         startActivity(intent);
     }
+
+    public void setOnline(boolean online) {
+        ONLINE = online;
+        OverviewFragment overviewFragment = (OverviewFragment)getSupportFragmentManager().findFragmentById(R.id.overview_fragment);
+        overviewFragment.getVideos();
+    }
+
 }
