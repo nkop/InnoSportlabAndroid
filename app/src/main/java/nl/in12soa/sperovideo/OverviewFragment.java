@@ -54,16 +54,18 @@ public class OverviewFragment extends Fragment {
         getVideosURL = "http://innosportlab.herokuapp.com/users/" + userID + "/videos";
         getVideos();
 //        online = false;
-        if(OverviewActivity.ONLINE) {
-            videoArray = new ArrayList<>();
-            if (videoLocalArray != null) {
-                for (int i = 0; i < videoLocalArray.length; i++) {
-                    Video video = new Video("1", videoLocalArray[i].getAbsolutePath(), null, null);
-                    videoArray.add(video);
-                }
-            } else {
-                Toast.makeText(getActivity().getApplicationContext(), "There are no videos yet.", Toast.LENGTH_LONG).show();
+        videoArray = new ArrayList<>();
+
+        if (videoLocalArray != null) {
+            for (int i = 0; i < videoLocalArray.length; i++) {
+                Video video = new Video("1", videoLocalArray[i].getAbsolutePath(), null, null);
+                videoArray.add(video);
             }
+        } else {
+            Toast.makeText(getActivity().getApplicationContext(), "There are no videos yet.", Toast.LENGTH_LONG).show();
+        }
+        //if(OverviewActivity.ONLINE) {
+
 
             videoAdapter = new VideoAdapter(getActivity().getApplicationContext(), videoArray);
             ListView listView = (ListView) view.findViewById(R.id.video_list);
@@ -79,7 +81,7 @@ public class OverviewFragment extends Fragment {
                     };
 
             listView.setOnItemClickListener(mMessageClickedHandler);
-        }
+        //}
 
         return view;
     }
