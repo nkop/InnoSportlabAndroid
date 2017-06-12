@@ -71,7 +71,7 @@ public class VideoAnalyseActivity extends AppCompatActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (getIntent().getStringExtra("id") != null)
+        if (!getIntent().getStringExtra("id").equals("1"))
             getMenuInflater().inflate(R.menu.menu_video, menu);
         return true;
     }
