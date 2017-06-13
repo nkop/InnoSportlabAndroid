@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <uses-feature
         android:name="android.hardware.nfc"
@@ -52,7 +53,9 @@
             android:name=".CameraViewActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".OverviewActivity" />
+            android:name=".OverviewActivity"
+            android:configChanges="orientation"
+            />
         <activity
             android:name=".LoginActivity"
             android:noHistory="true" />
