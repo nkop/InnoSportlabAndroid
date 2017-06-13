@@ -2,12 +2,16 @@ package nl.in12soa.sperovideo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -26,19 +30,23 @@ import java.util.Map;
 
 import nl.in12soa.sperovideo.Services.ApiService;
 
-public class VideoAnalyseActivity extends AppCompatActivity {
+public class VideoAnalyseActivity extends AppCompatActivity implements SurfaceHolder.Callback{
 
     private String filePath;
     private String videoID;
     private VideoView videoView;
     private MediaController mediaController;
     private String addTagUrl;
-
+    public SurfaceHolder surfaceHolder;
+    private MediaPlayer mediaPlayer;
+    private Uri test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_analyse);
+
+//        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surface_view);
 
         addTagUrl = "https://innosportlab.herokuapp.com/tags";
 
@@ -48,6 +56,8 @@ public class VideoAnalyseActivity extends AppCompatActivity {
 
 
         videoView = (VideoView) findViewById(R.id.videoView);
+        surfaceHolder = videoView.getHolder();
+        surfaceHolder.addCallback(this);
 
         if (mediaController == null) {
             mediaController = new MediaController(VideoAnalyseActivity.this);
@@ -62,12 +72,13 @@ public class VideoAnalyseActivity extends AppCompatActivity {
         {
             String url = "http://innosportlab.herokuapp.com/videos/" + videoID + "/video";
             uri = Uri.parse(url);
+            test = Uri.parse(url);
         }
 
         mediaController.setAnchorView(videoView);
         videoView.setMediaController(mediaController);
-        videoView.setVideoURI(uri);
-        videoView.start();
+//        videoView.setVideoURI(uri);
+//        videoView.start();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -135,5 +146,30 @@ public class VideoAnalyseActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
 
         return dialog;
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        try{
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setDataSource(test.toString());
+            mediaPlayer.setDisplay(surfaceHolder);
+            mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(0.5f));
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        mediaPlayer.stop();
     }
 }

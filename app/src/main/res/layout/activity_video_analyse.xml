@@ -5,6 +5,10 @@
     android:layout_height="match_parent"
     tools:context="nl.in12soa.sperovideo.VideoAnalyseActivity">
 
+        <!--<SurfaceView-->
+            <!--android:id="@+id/surface_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
 
         <VideoView
             android:layout_alignParentTop="true"
