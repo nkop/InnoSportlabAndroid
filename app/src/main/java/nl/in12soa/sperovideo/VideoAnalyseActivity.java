@@ -2,14 +2,17 @@ package nl.in12soa.sperovideo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.EditText;
@@ -30,57 +33,81 @@ import java.util.Map;
 
 import nl.in12soa.sperovideo.Services.ApiService;
 
-public class VideoAnalyseActivity extends AppCompatActivity implements SurfaceHolder.Callback{
+public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnVideoSizeChangedListener, SurfaceHolder.Callback, MediaController.MediaPlayerControl{
 
-    private String filePath;
-    private String videoID;
-    private VideoView videoView;
     private MediaController mediaController;
     private String addTagUrl;
-    public SurfaceHolder surfaceHolder;
+    private SurfaceView surfaceView;
     private MediaPlayer mediaPlayer;
-    private Uri test;
+    private Uri videoUri;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_analyse);
 
-//        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surface_view);
+        surfaceView = (SurfaceView) findViewById(R.id.surface_view);
 
         addTagUrl = "https://innosportlab.herokuapp.com/tags";
-
+        handler = new Handler();
         Intent intent = getIntent();
-        filePath = intent.getStringExtra("filePath");
-        videoID = intent.getStringExtra("id");
+        String filePath = intent.getStringExtra("filePath");
+        String videoID = intent.getStringExtra("id");
 
+        surfaceView.getHolder().addCallback(this);
 
-        videoView = (VideoView) findViewById(R.id.videoView);
-        surfaceHolder = videoView.getHolder();
-        surfaceHolder.addCallback(this);
-
-        if (mediaController == null) {
-            mediaController = new MediaController(VideoAnalyseActivity.this);
-        }
+//        if (mediaController == null) {
+//            mediaController = new MediaController(VideoAnalyseActivity.this);
+//        }
 
         Uri uri;
         if(filePath != null)
         {
             uri = Uri.parse(filePath);
+            videoUri = Uri.parse(filePath);
         }
         else
         {
             String url = "http://innosportlab.herokuapp.com/videos/" + videoID + "/video";
             uri = Uri.parse(url);
-            test = Uri.parse(url);
+            videoUri = Uri.parse(url);
         }
 
-        mediaController.setAnchorView(videoView);
-        videoView.setMediaController(mediaController);
-//        videoView.setVideoURI(uri);
-//        videoView.start();
+        initializeMediaPlayer();
     }
 
+//    @Override
+//    public void surfaceCreated(SurfaceHolder holder) {
+//        try{
+//            mediaPlayer = new MediaPlayer();
+//            mediaPlayer.setDataSource(videoUri.toString());
+//            mediaPlayer.setDisplay(surfaceView.getHolder());
+//            mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(0.5f));
+//            mediaPlayer.prepare();
+//            mediaPlayer.start();
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
+//
+//    }
+
+    private void initializeMediaPlayer(){
+        try{
+            mediaController = new MediaController(this);
+            mediaPlayer = MediaPlayer.create(this, videoUri);
+            mediaPlayer.setOnBufferingUpdateListener(this);
+            mediaPlayer.setOnCompletionListener(this);
+            mediaPlayer.setOnPreparedListener(this);
+            mediaPlayer.setScreenOnWhilePlaying(true);
+            mediaPlayer.setOnVideoSizeChangedListener(this);
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!getIntent().getStringExtra("id").equals("1"))
             getMenuInflater().inflate(R.menu.menu_video, menu);
@@ -105,7 +132,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements SurfaceHo
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
-                );
+        );
         tagText.setLayoutParams(lp);
         builder.setView(tagText);
 
@@ -149,20 +176,25 @@ public class VideoAnalyseActivity extends AppCompatActivity implements SurfaceHo
     }
 
     @Override
+    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+
+    }
+
+    @Override
     public void surfaceCreated(SurfaceHolder holder) {
         try{
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDataSource(test.toString());
-            mediaPlayer.setDisplay(surfaceHolder);
-            mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(0.5f));
-            mediaPlayer.prepare();
+            mediaPlayer.setDisplay(surfaceView.getHolder());
             mediaPlayer.start();
         }catch(Exception e){
             e.printStackTrace();
         }
-
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mediaController.show();
+        return false;
+    }
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
@@ -171,5 +203,91 @@ public class VideoAnalyseActivity extends AppCompatActivity implements SurfaceHo
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         mediaPlayer.stop();
+        mediaPlayer.release();
     }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        mediaController.setMediaPlayer(this);
+        mediaController.setAnchorView(surfaceView);
+        mediaController.setEnabled(true);
+
+        handler.post(new Runnable(){
+            public void run(){
+                mediaController.show();
+            }
+        });
+
+    }
+
+    @Override
+    public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+
+    }
+
+    @Override
+    public void start() {
+        mediaPlayer.start();
+    }
+
+    @Override
+    public void pause() {
+        mediaPlayer.pause();
+    }
+
+    @Override
+    public int getDuration() {
+        return mediaPlayer.getDuration();
+    }
+
+    @Override
+    public int getCurrentPosition() {
+        return mediaPlayer.getCurrentPosition();
+    }
+
+    @Override
+    public void seekTo(int pos) {
+        mediaPlayer.seekTo(pos);
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return mediaPlayer.isPlaying();
+    }
+
+    @Override
+    public int getBufferPercentage() {
+        return 0;
+    }
+
+    @Override
+    public boolean canPause() {
+        return true;
+    }
+
+    @Override
+    public boolean canSeekBackward() {
+        return true;
+    }
+
+    @Override
+    public boolean canSeekForward() {
+        return true;
+    }
+
+    @Override
+    public int getAudioSessionId() {
+        return 0;
+    }
+
+//    @Override
+//    public void surfaceDestroyed(SurfaceHolder holder) {
+//        mediaPlayer.stop();
+//        mediaController.hide();
+//    }
 }
