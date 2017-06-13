@@ -56,5 +56,15 @@
     <!--Settings strings-->
     <string name="resolution_label">Resolutie</string>
     <string name="fps_label">Frames per seconde(fps)</string>
+
+    <!--Video string-->
+    <string name="add_tag">Tag toevoegen</string>
+    <string name="tag_hint">Tag</string>
+    <string name="tag_success">Tag succesvol opgeslagen.</string>
+    <string name="tag_fail">Er is iets misgegaan.</string>
+
+    <!--Algemeen-->
+    <string name="save">Opslaan</string>
+    <string name="cancel">Annuleren</string>
 </resources>
 
