@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -43,35 +42,16 @@ public class OverviewFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.overview_fragment, container, false);
+
         // check if user just logged in or if stored in localStorage
         String userID = getActivity().getIntent().getStringExtra("userID");
         if (userID == null) {
             SharedPreferences sharedPreferences = getActivity().getApplicationContext().getSharedPreferences("SPEROVIDEO", 0);
             userID = sharedPreferences.getString("id", null);
         }
+
         getVideosURL = "http://innosportlab.herokuapp.com/users/" + userID + "/videos";
         getVideos();
-/*
-//        online = false;
-        if (!OverviewActivity.ONLINE) {
-
-        }
-
-        videoAdapter = new VideoAdapter(getActivity().getApplicationContext(), videoArray);
-        ListView listView = (ListView) view.findViewById(R.id.video_list);
-        videoAdapter.notifyDataSetChanged();
-        listView.setAdapter(videoAdapter);
-
-        AdapterView.OnItemClickListener mMessageClickedHandler = new
-                AdapterView.OnItemClickListener() {
-                    public void onItemClick(AdapterView parent, View v, int position, long id) {
-                        Video video = videoAdapter.getItem(position);
-                        listener.onItemSelected(video);
-                    }
-                };
-
-        listView.setOnItemClickListener(mMessageClickedHandler);
-*/
 
         return view;
     }
@@ -163,8 +143,7 @@ public class OverviewFragment extends Fragment {
         }
     }
 
-    public void setVideoAdapter(ArrayList<Video> videoArray)
-    {
+    public void setVideoAdapter(ArrayList<Video> videoArray) {
         videoAdapter = new VideoAdapter(getActivity().getApplicationContext(), videoArray);
         ListView listView = (ListView) view.findViewById(R.id.video_list);
         videoAdapter.notifyDataSetChanged();

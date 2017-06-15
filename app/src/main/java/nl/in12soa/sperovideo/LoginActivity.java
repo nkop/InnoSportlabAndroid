@@ -93,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Ophalen gegevens mislukt. Probeer het later opnieuw", Toast.LENGTH_LONG).show();
                                     e.printStackTrace();
                                 }
+
                                 SharedPreferences.Editor editor = settings.edit();
                                 editor.putString("id", id);
                                 editor.putString("email", emailString);
@@ -114,10 +115,22 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             try{
-                                String parsedData = new String(error.networkResponse.data, "UTF-8");
-                                JSONObject obj = new JSONObject(parsedData);
-                                String message = obj.getString("message");
-                                Log.d("Error", message);
+                                if(error.networkResponse != null)
+                                {
+                                    String parsedData = new String(error.networkResponse.data, "UTF-8");
+                                    JSONObject obj = new JSONObject(parsedData);
+                                    String message = obj.getString("message");
+                                    Log.d("Error", message);
+                                    if(message.equals("Invalid email or password"))
+                                    {
+                                        Toast.makeText(getApplicationContext(), "Ongeldig e-mail of wachtwoord", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                                else
+                                {
+                                    Toast.makeText(getApplicationContext(), "Geen internetverbinding, kan niet inloggen", Toast.LENGTH_LONG).show();
+                                }
+
                             } catch (UnsupportedEncodingException | JSONException e) {
                                 e.printStackTrace();
                             }
