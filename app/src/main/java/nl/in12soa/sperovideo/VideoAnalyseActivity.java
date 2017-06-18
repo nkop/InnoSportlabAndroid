@@ -58,40 +58,18 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
         surfaceView.getHolder().addCallback(this);
 
-//        if (mediaController == null) {
-//            mediaController = new MediaController(VideoAnalyseActivity.this);
-//        }
-
-        Uri uri;
         if(filePath != null)
         {
-            uri = Uri.parse(filePath);
             videoUri = Uri.parse(filePath);
         }
         else
         {
             String url = "http://innosportlab.herokuapp.com/videos/" + videoID + "/video";
-            uri = Uri.parse(url);
             videoUri = Uri.parse(url);
         }
 
         initializeMediaPlayer();
     }
-
-//    @Override
-//    public void surfaceCreated(SurfaceHolder holder) {
-//        try{
-//            mediaPlayer = new MediaPlayer();
-//            mediaPlayer.setDataSource(videoUri.toString());
-//            mediaPlayer.setDisplay(surfaceView.getHolder());
-//            mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(0.5f));
-//            mediaPlayer.prepare();
-//            mediaPlayer.start();
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
-//
-//    }
 
     private void initializeMediaPlayer(){
         try{
@@ -284,10 +262,5 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     public int getAudioSessionId() {
         return 0;
     }
-
-//    @Override
-//    public void surfaceDestroyed(SurfaceHolder holder) {
-//        mediaPlayer.stop();
-//        mediaController.hide();
-//    }
+    
 }
