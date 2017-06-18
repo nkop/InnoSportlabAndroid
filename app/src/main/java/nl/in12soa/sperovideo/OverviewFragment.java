@@ -1,6 +1,10 @@
 package nl.in12soa.sperovideo;
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -39,6 +43,7 @@ public class OverviewFragment extends Fragment {
     private VideoAdapter videoAdapter;
     private View view;
     private String getVideosURL;
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.overview_fragment, container, false);
@@ -93,7 +98,7 @@ public class OverviewFragment extends Fragment {
                 });
                 if (videoLocalArray != null) {
                     for (int i = 0; i < videoLocalArray.length; i++) {
-                        Video video = new Video("1", videoLocalArray[i].getAbsolutePath(), null, null);
+                        Video video = new Video(videoLocalArray[i].getName(), videoLocalArray[i].getAbsolutePath(), null, null);
                         videoArray.add(video);
                     }
                 } else {
@@ -198,5 +203,6 @@ public class OverviewFragment extends Fragment {
             return filesuffix;
         }
     }
+
 
 }

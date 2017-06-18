@@ -5,6 +5,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,6 +30,7 @@ public class ClientService{
     private int port;
     private Socket socket;
     private String data;
+    private String rfid;
 
     public ClientService(Context ctxp){
         mContext = ctxp;
@@ -38,6 +42,14 @@ public class ClientService{
     }
     public void sendData(String datap){
         data = datap;
+        try {
+            JSONObject jsonObject = new JSONObject(data);
+            rfid = jsonObject.getString("rfid");
+            if (rfid == null)
+                rfid = "norfid";
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         new DataSender().execute();
     }
 
@@ -63,7 +75,7 @@ public class ClientService{
                 outputStream.write(data.getBytes());
                 socket.shutdownOutput();
                 final File f = new File(Environment.getExternalStorageDirectory() + "/"
-                        + mContext.getPackageName() + "/wifip2pshared-" + System.currentTimeMillis()
+                        + mContext.getPackageName() + "/" + rfid + "-video-" + System.currentTimeMillis()
                         + ".mp4");
                 File dirs = new File(f.getParent());
                 if (!dirs.exists())
