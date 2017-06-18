@@ -20,18 +20,18 @@ public class VideoAdapter extends ArrayAdapter<Video> {
 
     private Context mContext;
     //Wouter check dit even, wordt wel ge-assigned maar niet gebruikt.
-    private ArrayList<Video> videoList;
+//    private ArrayList<Video> videoList;
 
     public VideoAdapter(Context context, ArrayList<Video> videoList){
         super(context, 0, videoList);
         this.mContext = context;
-        this.videoList = videoList;
+//        this.videoList = videoList;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Video video = getItem(position);
+//        Video video = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.overview_list_item, parent, false);

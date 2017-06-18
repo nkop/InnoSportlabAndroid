@@ -125,8 +125,10 @@ public class AnalyseService extends BroadcastReceiver {
             @Override
             public void onDnsSdTxtRecordAvailable(
                     String fullDomain, Map record, WifiP2pDevice device) {
-                cameraServices.put(device.deviceAddress + "_id", record.get("service_id").toString());
-                cameraServices.put(device.deviceAddress + "_type", record.get("service_type").toString());
+                if(record.containsKey("service_id")){
+                    cameraServices.put(device.deviceAddress + "_id", record.get("service_id").toString());
+                    cameraServices.put(device.deviceAddress + "_type", record.get("service_type").toString());
+                }
             }
         };
         WifiP2pManager.DnsSdServiceResponseListener servListener = new WifiP2pManager.DnsSdServiceResponseListener() {
