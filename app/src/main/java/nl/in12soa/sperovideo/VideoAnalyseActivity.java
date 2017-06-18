@@ -262,5 +262,5 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     public int getAudioSessionId() {
         return 0;
     }
-    
+
 }
