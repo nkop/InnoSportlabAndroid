@@ -28,6 +28,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,10 +39,12 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
     private MediaController mediaController;
     private String addTagUrl;
+    private String addVideoUrl;
     private SurfaceView surfaceView;
     private MediaPlayer mediaPlayer;
     private Uri videoUri;
     private Handler handler;
+    private String videoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +53,14 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
 
+        addVideoUrl = "https://innosportlab.herokuapp.com/videos/" + "yFear"; //----!!! Deze yFear is de username die variabel moet zijn uit localstorage ----!!
         addTagUrl = "https://innosportlab.herokuapp.com/tags";
         handler = new Handler();
         Intent intent = getIntent();
         String filePath = intent.getStringExtra("filePath");
         String videoID = intent.getStringExtra("id");
+
+        videoPath = filePath;
 
         surfaceView.getHolder().addCallback(this);
 
@@ -97,8 +103,32 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
             case R.id.tag_add:
                 createDialog().show();
                 return(true);
+            case R.id.upload_vid:
+                uploadVideo();
+                return(true);
         }
         return(super.onOptionsItemSelected(item));
+    }
+
+    //Hier de upload, moet als param de file meegeven, maar dit is niet de manier hoe het moet denk ik.
+    public void uploadVideo(){
+        Map<String, File> params = new HashMap<>();
+        params.put("file", new File(videoPath));
+        //params.put("videoId", "591d867c2a9e2534342914b1");
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST, addVideoUrl, new JSONObject(params), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Toast.makeText(getApplicationContext(), R.string.video_uploaded, Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), R.string.tag_fail, Toast.LENGTH_LONG).show();
+            }
+        }
+        );
+        ApiService.getInstance(getApplicationContext()).addToRequestQueue(request);
     }
 
     public AlertDialog createDialog() {

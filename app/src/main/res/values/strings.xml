@@ -62,6 +62,7 @@
     <string name="tag_hint">Tag</string>
     <string name="tag_success">Tag succesvol opgeslagen.</string>
     <string name="tag_fail">Er is iets misgegaan.</string>
+    <string name="video_uploaded">Video upload succesvol.</string>
 
     <!--Algemeen-->
     <string name="save">Opslaan</string>
