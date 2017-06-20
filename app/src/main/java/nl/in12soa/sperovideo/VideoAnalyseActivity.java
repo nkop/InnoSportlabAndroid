@@ -2,6 +2,7 @@ package nl.in12soa.sperovideo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -54,8 +55,9 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         setContentView(R.layout.activity_video_analyse);
 
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
-
-        addVideoUrl = "https://innosportlab.herokuapp.com/videos/" + "yFear"; //----!!! Deze yFear is de username die variabel moet zijn uit localstorage ----!!
+        SharedPreferences localStorage = this.getSharedPreferences("SPEROVIDEO", 0);
+        String userName = localStorage.getString("userName", null);
+        addVideoUrl = "https://innosportlab.herokuapp.com/videos/" + userName;
         addTagUrl = "https://innosportlab.herokuapp.com/tags";
         handler = new Handler();
         Intent intent = getIntent();
@@ -215,7 +217,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-
+        int test = percent;
     }
 
     @Override
