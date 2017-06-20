@@ -141,10 +141,8 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         return(super.onOptionsItemSelected(item));
     }
 
-    //Hier de upload, moet als param de file meegeven, maar dit is niet de manier hoe het moet denk ik.
     public void uploadVideo(){
         Map<String, File> params = new HashMap<>();
-        File file = new File(videoPath);
         params.put("file", new File(videoPath));
         //params.put("videoId", "591d867c2a9e2534342914b1");
         JsonObjectRequest request = new JsonObjectRequest(
