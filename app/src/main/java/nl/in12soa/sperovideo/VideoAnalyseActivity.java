@@ -42,6 +42,8 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     private MediaPlayer mediaPlayer;
     private Uri videoUri;
     private Handler handler;
+    private String slowMotionRate;
+    boolean onlineVideo = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         Intent intent = getIntent();
         String filePath = intent.getStringExtra("filePath");
         String videoID = intent.getStringExtra("id");
+        slowMotionRate = intent.getStringExtra("slowMotionRate");
 
         surfaceView.getHolder().addCallback(this);
 
@@ -64,25 +67,43 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         }
         else
         {
-            String url = "http://innosportlab.herokuapp.com/videos/" + videoID + "/video";
+            String url = "https://innosportlab.herokuapp.com/videos/" + videoID + "/video";
             videoUri = Uri.parse(url);
+            onlineVideo = true;
         }
 
         initializeMediaPlayer();
     }
 
     private void initializeMediaPlayer(){
-        try{
-            mediaController = new MediaController(this);
+        mediaController = new MediaController(this);
+        if(onlineVideo){
+            try{
+                mediaPlayer = new MediaPlayer();
+                mediaPlayer.setDataSource(videoUri.toString());
+                mediaPlayer.prepare();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }else{
             mediaPlayer = MediaPlayer.create(this, videoUri);
+        }
+        try{
             mediaPlayer.setOnBufferingUpdateListener(this);
             mediaPlayer.setOnCompletionListener(this);
             mediaPlayer.setOnPreparedListener(this);
             mediaPlayer.setScreenOnWhilePlaying(true);
             mediaPlayer.setOnVideoSizeChangedListener(this);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(Float.parseFloat(slowMotionRate)));
         }catch(Exception e){
             e.printStackTrace();
+            if(mediaPlayer != null){
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaController.hide();
+                mediaController.setEnabled(false);
+            }
         }
 
     }
@@ -161,7 +182,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         try{
-            mediaPlayer.setDisplay(surfaceView.getHolder());
+            mediaPlayer.setDisplay(holder);
             mediaPlayer.start();
         }catch(Exception e){
             e.printStackTrace();
@@ -180,8 +201,13 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        mediaPlayer.stop();
-        mediaPlayer.release();
+        try{
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
