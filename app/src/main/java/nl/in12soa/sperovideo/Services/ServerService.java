@@ -96,7 +96,7 @@ public class ServerService extends AsyncTask<Void, Void, Void> {
                         outputStream.write(buf, 0, len);
                     }
                     outputStream.close();
-                    serverSocket.close();
+//                    serverSocket.close();
                     VIDEOURI = null;
                 }
             } catch (Exception e) {

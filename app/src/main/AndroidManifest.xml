@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.NFC" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature
         android:name="android.hardware.nfc"
@@ -48,15 +48,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CameraActivity"
-            android:noHistory="true" />
-        <activity 
+            android:name=".CameraActivity" />
+
+        <activity
             android:name=".CameraViewActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".OverviewActivity"
-            android:configChanges="orientation"
-            />
+            android:configChanges="orientation">
+            <intent-filter>
+                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".LoginActivity"
             android:noHistory="true" />
