@@ -1,17 +1,20 @@
 package nl.in12soa.sperovideo;
 
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
 import android.os.Environment;
 import android.support.v4.app.FragmentManager;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +27,7 @@ public class OverviewActivity extends AppCompatActivity implements OverviewFragm
     private boolean hasOnePane;
     public static boolean ONLINE = false;
     private NfcAdapter nfcAdapter;
+    private List<String> slowMotionRates = new ArrayList<>();
 
 
     @Override
@@ -32,6 +36,8 @@ public class OverviewActivity extends AppCompatActivity implements OverviewFragm
         setContentView(R.layout.activity_overview);
         ActionBarService.setActionBarTitle(R.string.analyse, getSupportActionBar());
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        initializeSlowMotionRatesList();
 
         hasOnePane = !getResources().getBoolean(R.bool.dual_pane);
 
@@ -44,11 +50,24 @@ public class OverviewActivity extends AppCompatActivity implements OverviewFragm
     }
 
     @Override
-    public void onItemSelected(Video video) {
-        Intent intent = new Intent(getApplicationContext(), VideoAnalyseActivity.class);
-        intent.putExtra("filePath", video.filePath);
-        intent.putExtra("id", video._id);
-        startActivity(intent);
+    public void onItemSelected(final Video video) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.pick_slowmotion);
+        builder.setItems(slowMotionRates.toArray(new CharSequence[slowMotionRates.size()]), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                String rate = slowMotionRates.get(which);
+                if(rate == null){
+                    rate = "1";
+                }
+                Intent intent = new Intent(getApplicationContext(), VideoAnalyseActivity.class);
+                intent.putExtra("filePath", video.filePath);
+                intent.putExtra("id", video._id);
+                intent.putExtra("slowMotionRate", rate);
+                startActivity(intent);
+            }
+        });
+        builder.create();
+        builder.show();
     }
 
     public void setOnline(boolean online) {
@@ -163,6 +182,13 @@ public class OverviewActivity extends AppCompatActivity implements OverviewFragm
         if (nfcAdapter != null && nfcAdapter.isEnabled()) {
             nfcAdapter.disableForegroundDispatch(this);
         }
+    }
+
+    private void initializeSlowMotionRatesList() {
+        slowMotionRates.add("0.25");
+        slowMotionRates.add("0.5");
+        slowMotionRates.add("0.75");
+        slowMotionRates.add("1");
     }
 
 }
