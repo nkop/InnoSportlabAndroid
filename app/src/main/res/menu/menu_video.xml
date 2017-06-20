@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/upload_vid"
+        android:id="@+id/upload_video"
         android:title="Upload Video"
         app:showAsAction="always"
         android:icon="@drawable/ic_upload_black_24dp"

@@ -119,12 +119,20 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if(onlineVideo){
+            menu.findItem(R.id.upload_video).setVisible(false);
+        }
+        return true;
+    }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.tag_add:
                 createDialog().show();
                 return(true);
-            case R.id.upload_vid:
+            case R.id.upload_video:
                 uploadVideo();
                 return(true);
         }
@@ -134,6 +142,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     //Hier de upload, moet als param de file meegeven, maar dit is niet de manier hoe het moet denk ik.
     public void uploadVideo(){
         Map<String, File> params = new HashMap<>();
+        File file = new File(videoPath);
         params.put("file", new File(videoPath));
         //params.put("videoId", "591d867c2a9e2534342914b1");
         JsonObjectRequest request = new JsonObjectRequest(
