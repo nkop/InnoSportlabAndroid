@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 import nl.in12soa.sperovideo.CameraActivity;
 import nl.in12soa.sperovideo.CameraViewActivity;
+import nl.in12soa.sperovideo.R;
 
 /**
  * Created by Ahmad on 3/10/2017.
@@ -27,7 +28,8 @@ import nl.in12soa.sperovideo.CameraViewActivity;
 public class ServerService extends AsyncTask<Void, Void, Void> {
 
     private CameraActivity mActivity;
-    private ServerSocket serverSocket;
+    public ServerSocket serverSocket;
+    public static int PORT;
     private static final int CAMERA_RESULT = 5;
     private HashMap<String, Socket> clientmap;
     public static Uri VIDEOURI;
@@ -36,7 +38,6 @@ public class ServerService extends AsyncTask<Void, Void, Void> {
         clientmap = new HashMap<>();
         try {
             serverSocket = new ServerSocket();
-            serverSocket.setReuseAddress(true);
             serverSocket.bind(new InetSocketAddress(8888));
         }catch (IOException e){
             e.printStackTrace();
@@ -70,10 +71,11 @@ public class ServerService extends AsyncTask<Void, Void, Void> {
                         public void run() {
                             Intent intent = new Intent(mActivity, CameraViewActivity.class);
                             try {
-                                intent.putExtra("resolution_y",command.getJSONObject("parameters").getInt("resolution_y"));
-                                intent.putExtra("resolution_x",command.getJSONObject("parameters").getInt("resolution_x"));
+                                intent.putExtra("resolution_quality",command.getJSONObject("parameters").getInt("resolution_quality"));
                                 intent.putExtra("framerate", command.getJSONObject("parameters").getInt("framerate"));
                                 intent.putExtra("duration", command.getJSONObject("parameters").getInt("duration"));
+                                mActivity.setFeedback(mActivity.getResources().getString(R.string.connected, command.getJSONObject("parameters").getString("device_name")));
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -89,14 +91,12 @@ public class ServerService extends AsyncTask<Void, Void, Void> {
                         }
                     }
                     ContentResolver cr = mActivity.getContentResolver();
-                    InputStream inputStream = null;
-                    inputStream = cr.openInputStream(VIDEOURI);
+                    InputStream inputStream = cr.openInputStream(VIDEOURI);
                     OutputStream outputStream = client.getOutputStream();
                     while ((len = inputStream.read(buf)) != -1) {
                         outputStream.write(buf, 0, len);
                     }
                     outputStream.close();
-//                    serverSocket.close();
                     VIDEOURI = null;
                 }
             } catch (Exception e) {
