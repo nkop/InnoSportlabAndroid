@@ -8,4 +8,11 @@
         android:icon="@drawable/ic_local_offer_black_24dp"
         />
 
+    <item
+        android:id="@+id/comment_add"
+        android:title="@string/add_comment"
+        app:showAsAction="always"
+        android:icon="@drawable/comment_icon"
+        />
+
 </menu>
