@@ -33,6 +33,7 @@
     <string name="error_searching_cameras">Fout bij zoeken naar cameras, probeer opnieuw</string>
     <string name="unknown_error">Onbekende fout</string>
     <string name="playing_video">Video aan het afspelen</string>
+    <string name="pick_slowmotion">Kies een afspeelsnelheid</string>
 
     <!--Register strings-->
     <string name="email_hint">E-mail</string>
@@ -62,6 +63,12 @@
     <string name="tag_hint">Tag</string>
     <string name="tag_success">Tag succesvol opgeslagen.</string>
     <string name="tag_fail">Er is iets misgegaan.</string>
+
+    <string name="video_uploaded">Video upload succesvol.</string>
+    <string name="add_comment">Comment toevoegen</string>
+    <string name="comment_hint">Comment</string>
+    <string name="comment_success">Comment succesvol opgeslagen.</string>
+    <string name="comment_fail">Er is iets misgegaan met opslaan van comment.</string>
 
     <!--Algemeen-->
     <string name="save">Opslaan</string>

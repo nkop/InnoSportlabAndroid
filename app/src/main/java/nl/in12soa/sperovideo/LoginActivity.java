@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -40,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private String id;
     private String emailString;
     private String rfid;
+    private String userName;
 
     private Map<String, String> params = new HashMap<>();
 
@@ -86,16 +88,19 @@ public class LoginActivity extends AppCompatActivity {
                                     id = response.getString("_id");
                                     emailString = response.getString("email");
                                     rfid = response.getString("rfid");
+                                    userName = response.getString("userName");
                                 }
                                 catch(Exception e)
                                 {
                                     Toast.makeText(getApplicationContext(), "Ophalen gegevens mislukt. Probeer het later opnieuw", Toast.LENGTH_LONG).show();
                                     e.printStackTrace();
                                 }
+
                                 SharedPreferences.Editor editor = settings.edit();
                                 editor.putString("id", id);
                                 editor.putString("email", emailString);
                                 editor.putString("rfid", rfid);
+                                editor.putString("userName", userName);
                                 editor.apply();
 
                                 overviewIntent.putExtra("userID", id);
@@ -113,10 +118,22 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             try{
-                                String parsedData = new String(error.networkResponse.data, "UTF-8");
-                                JSONObject obj = new JSONObject(parsedData);
-                                String message = obj.getString("message");
-                                Log.d("Error", message);
+                                if(error.networkResponse != null)
+                                {
+                                    String parsedData = new String(error.networkResponse.data, "UTF-8");
+                                    JSONObject obj = new JSONObject(parsedData);
+                                    String message = obj.getString("message");
+                                    Log.d("Error", message);
+                                    if(message.equals("Invalid email or password"))
+                                    {
+                                        Toast.makeText(getApplicationContext(), "Ongeldig e-mail of wachtwoord", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                                else
+                                {
+                                    Toast.makeText(getApplicationContext(), "Geen internetverbinding, kan niet inloggen", Toast.LENGTH_LONG).show();
+                                }
+
                             } catch (UnsupportedEncodingException | JSONException e) {
                                 e.printStackTrace();
                             }
@@ -125,6 +142,11 @@ public class LoginActivity extends AppCompatActivity {
                     });
 
             //Add this JSON object request to the requestQueue of the api
+            jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    60000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
             ApiService.getInstance(getApplicationContext()).addToRequestQueue(jsObjRequest);
         }
         else

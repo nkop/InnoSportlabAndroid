@@ -18,7 +18,6 @@ import nl.in12soa.sperovideo.Services.CameraService;
 
 public class CameraActivity extends AppCompatActivity implements WifiP2pManager.ConnectionInfoListener{
 
-    //Waarom zijn deze static?
     public IntentFilter intentFilter;
     public WifiP2pManager wifiP2pManager;
     public WifiP2pManager.Channel channel;

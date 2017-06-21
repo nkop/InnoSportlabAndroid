@@ -1,6 +1,10 @@
 package nl.in12soa.sperovideo;
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -9,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -41,52 +44,25 @@ public class OverviewFragment extends Fragment {
     private View view;
     private String getVideosURL;
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.overview_fragment, container, false);
+
         // check if user just logged in or if stored in localStorage
         String userID = getActivity().getIntent().getStringExtra("userID");
-        if(userID == null)
-        {
+        if (userID == null) {
             SharedPreferences sharedPreferences = getActivity().getApplicationContext().getSharedPreferences("SPEROVIDEO", 0);
             userID = sharedPreferences.getString("id", null);
         }
+
         getVideosURL = "http://innosportlab.herokuapp.com/users/" + userID + "/videos";
         getVideos();
-//        online = false;
-        if(OverviewActivity.ONLINE) {
-            videoArray = new ArrayList<>();
-            if (videoLocalArray != null) {
-                for (int i = 0; i < videoLocalArray.length; i++) {
-                    Video video = new Video("1", videoLocalArray[i].getAbsolutePath(), null, null);
-                    videoArray.add(video);
-                }
-            } else {
-                Toast.makeText(getActivity().getApplicationContext(), "There are no videos yet.", Toast.LENGTH_LONG).show();
-            }
-
-            videoAdapter = new VideoAdapter(getActivity().getApplicationContext(), videoArray);
-            ListView listView = (ListView) view.findViewById(R.id.video_list);
-            videoAdapter.notifyDataSetChanged();
-            listView.setAdapter(videoAdapter);
-
-            AdapterView.OnItemClickListener mMessageClickedHandler = new
-                    AdapterView.OnItemClickListener() {
-                        public void onItemClick(AdapterView parent, View v, int position, long id) {
-                            Video video = videoAdapter.getItem(position);
-                            listener.onItemSelected(video);
-                        }
-                    };
-
-            listView.setOnItemClickListener(mMessageClickedHandler);
-        }
 
         return view;
     }
 
 
-    public interface OnItemSelectedListener
-    {
+    public interface OnItemSelectedListener {
         void onItemSelected(Video video);
     }
 
@@ -97,7 +73,9 @@ public class OverviewFragment extends Fragment {
     }
 
     public void getVideos() {
-        if(!OverviewActivity.ONLINE) {
+        videoArray = new ArrayList<>();
+        videoArray.clear();
+        if (!OverviewActivity.ONLINE) {
             try {
                 String path = Environment.getExternalStorageDirectory() + "/" + getActivity().getApplicationContext().getPackageName();
                 File dir = new File(path);
@@ -118,20 +96,26 @@ public class OverviewFragment extends Fragment {
                         }
                     }
                 });
-
+                if (videoLocalArray != null) {
+                    for (int i = 0; i < videoLocalArray.length; i++) {
+                        Video video = new Video("1", videoLocalArray[i].getAbsolutePath(), null, null);
+                        videoArray.add(video);
+                    }
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), "There are no videos yet.", Toast.LENGTH_LONG).show();
+                }
+                setVideoAdapter(videoArray);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else{
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, getVideosURL, new Response.Listener<String>(){
+        } else {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, getVideosURL, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    try{
-                        videoArray = new ArrayList<>();
+                    try {
                         JSONArray jsonArray = new JSONArray(response);
-                        for(int i = 0; i < jsonArray.length(); i++)
-                        {
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject responseJSON = jsonArray.getJSONObject(i);
                             String id = responseJSON.getString("_id");
                             String sporter = responseJSON.getString("sporter");
@@ -139,31 +123,16 @@ public class OverviewFragment extends Fragment {
                             Video video = new Video(id, null, sporter, date);
                             videoArray.add(video);
                         }
+                        setVideoAdapter(videoArray);
 
-                        videoAdapter = new VideoAdapter(getActivity().getApplicationContext(), videoArray);
-                        ListView listView = (ListView) view.findViewById(R.id.video_list);
-                        videoAdapter.notifyDataSetChanged();
-                        listView.setAdapter(videoAdapter);
-
-                        AdapterView.OnItemClickListener mMessageClickedHandler = new
-                                AdapterView.OnItemClickListener() {
-                                    public void onItemClick(AdapterView parent, View v, int position, long id) {
-                                        Video video = videoAdapter.getItem(position);
-                                        listener.onItemSelected(video);
-                                    }
-                                };
-
-                        listView.setOnItemClickListener(mMessageClickedHandler);
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    try{
+                    try {
                         String parsedData = new String(error.networkResponse.data, "UTF-8");
                         JSONObject obj = new JSONObject(parsedData);
                         String message = obj.getString("message");
@@ -179,27 +148,44 @@ public class OverviewFragment extends Fragment {
         }
     }
 
-    private boolean checkFileExtension( File fileName ) {
+    public void setVideoAdapter(ArrayList<Video> videoArray) {
+        videoAdapter = new VideoAdapter(getActivity().getApplicationContext(), videoArray);
+        ListView listView = (ListView) view.findViewById(R.id.video_list);
+        videoAdapter.notifyDataSetChanged();
+        listView.setAdapter(videoAdapter);
+
+        AdapterView.OnItemClickListener mMessageClickedHandler = new
+                AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView parent, View v, int position, long id) {
+                        Video video = videoAdapter.getItem(position);
+                        listener.onItemSelected(video);
+                    }
+                };
+
+        listView.setOnItemClickListener(mMessageClickedHandler);
+    }
+
+    private boolean checkFileExtension(File fileName) {
         String ext = getFileExtension(fileName);
-        if ( ext == null) return false;
+        if (ext == null) return false;
         try {
-            if ( SupportedFileFormat.valueOf(ext.toUpperCase()) != null ) {
+            if (SupportedFileFormat.valueOf(ext.toUpperCase()) != null) {
                 return true;
             }
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return false;
         }
         return false;
     }
 
-    public String getFileExtension( File f ) {
-        return getFileExtension( f.getName() );
+    public String getFileExtension(File f) {
+        return getFileExtension(f.getName());
     }
 
-    public String getFileExtension( String fileName ) {
+    public String getFileExtension(String fileName) {
         int i = fileName.lastIndexOf('.');
         if (i > 0) {
-            return fileName.substring(i+1);
+            return fileName.substring(i + 1);
         } else
             return null;
     }
@@ -209,7 +195,7 @@ public class OverviewFragment extends Fragment {
 
         private String filesuffix;
 
-        SupportedFileFormat( String filesuffix ) {
+        SupportedFileFormat(String filesuffix) {
             this.filesuffix = filesuffix;
         }
 
@@ -217,5 +203,6 @@ public class OverviewFragment extends Fragment {
             return filesuffix;
         }
     }
+
 
 }
