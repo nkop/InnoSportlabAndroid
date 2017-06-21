@@ -32,6 +32,8 @@ import com.bikomobile.multipart.MultipartRequest;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,13 +93,15 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
                 if(mediaPlayer == null){
                     mediaPlayer = new MediaPlayer();
                 }
+                mediaPlayer.reset();
                 mediaPlayer.setDataSource(videoUri.toString());
-                mediaPlayer.prepare();
+                mediaPlayer.prepareAsync();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             if(mediaPlayer == null){
+                mediaPlayer.reset();
                 mediaPlayer = MediaPlayer.create(this, videoUri);
             }
         }
@@ -153,28 +157,6 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     }
 
     public void uploadVideo() {
-//        Map<String, File> params = new HashMap<>();
-//        File videoFile = new File(videoPath);
-//        params.put("file", videoFile);
-//        JsonObjectRequest request = new JsonObjectRequest(
-//                Request.Method.POST, addVideoUrl, new JSONObject(params), new Response.Listener<JSONObject>() {
-//            @Override
-//            public void onResponse(JSONObject response) {
-//                Toast.makeText(getApplicationContext(), R.string.video_uploaded, Toast.LENGTH_SHORT).show();
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getApplicationContext(), R.string.tag_fail, Toast.LENGTH_LONG).show();
-//            }
-//        }
-//        ){
-//            @Override
-//            public String getBodyContentType(){
-//                return "multipart/form-data;boundary=wtftest";
-//            }
-//        };
-
         Multipart multipart = new Multipart(this);
         File videoToUpload = new File(videoUri.toString());
         multipart.addFile("video/mp4", "file", videoToUpload.getName() , videoUri);
@@ -280,14 +262,13 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        int test = percent;
+        Log.d("BUFFERING_VIDEO_", "%"+percent);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         try {
             mediaPlayer.setDisplay(holder);
-            mediaPlayer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -307,8 +288,10 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         try {
-            mediaPlayer.stop();
-            mediaPlayer.release();
+            if(mediaPlayer != null){
+                mediaPlayer.stop();
+                mediaPlayer.release();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -317,7 +300,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-
+        mp.release();
     }
 
     @Override
@@ -325,12 +308,12 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         mediaController.setMediaPlayer(this);
         mediaController.setAnchorView(surfaceView);
         mediaController.setEnabled(true);
-
         handler.post(new Runnable() {
             public void run() {
                 mediaController.show();
             }
         });
+        mediaPlayer.start();
 
     }
 
