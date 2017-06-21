@@ -41,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private String id;
     private String emailString;
     private String rfid;
+    private String userName;
 
     private Map<String, String> params = new HashMap<>();
 
@@ -87,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                                     id = response.getString("_id");
                                     emailString = response.getString("email");
                                     rfid = response.getString("rfid");
+                                    userName = response.getString("userName");
                                 }
                                 catch(Exception e)
                                 {
@@ -98,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString("id", id);
                                 editor.putString("email", emailString);
                                 editor.putString("rfid", rfid);
+                                editor.putString("userName", userName);
                                 editor.apply();
 
                                 overviewIntent.putExtra("userID", id);
