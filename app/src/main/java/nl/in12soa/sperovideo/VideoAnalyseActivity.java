@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -29,10 +30,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.bikomobile.multipart.Multipart;
 import com.bikomobile.multipart.MultipartRequest;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +56,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     private String videoPath;
     private String slowMotionRate;
     boolean onlineVideo = false;
+    private MenuItem uploadMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,16 +94,17 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         mediaController = new MediaController(this);
         if (onlineVideo) {
             try {
-                if(mediaPlayer == null){
+                if (mediaPlayer == null) {
                     mediaPlayer = new MediaPlayer();
                 }
                 mediaPlayer.setDataSource(videoUri.toString());
                 mediaPlayer.prepareAsync();
             } catch (Exception e) {
                 e.printStackTrace();
+                Toast.makeText(getApplicationContext(), "Er is iets mis gegaan met het laden van de video!", Toast.LENGTH_LONG).show();
             }
         } else {
-            if(mediaPlayer == null){
+            if (mediaPlayer == null) {
                 mediaPlayer = MediaPlayer.create(this, videoUri);
             }
         }
@@ -113,6 +118,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
             mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(Float.parseFloat(slowMotionRate)));
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Er is iets mis gegaan met het laden van de video!", Toast.LENGTH_LONG).show();
             if (mediaPlayer != null) {
                 mediaPlayer.stop();
                 mediaPlayer.release();
@@ -131,10 +137,13 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (!onlineVideo) {
+            View v = findViewById(R.id.comment_add);
             menu.findItem(R.id.comment_add).setVisible(false);
             menu.findItem(R.id.tag_add).setVisible(false);
+            uploadMenuItem = menu.findItem(R.id.upload_video);
         } else {
             menu.findItem(R.id.upload_video).setVisible(false);
+
         }
         return true;
     }
@@ -155,21 +164,25 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     }
 
     public void uploadVideo() {
+        Toast.makeText(getApplicationContext(), "Bezig met het uploaden van de video...", Toast.LENGTH_LONG).show();
+        uploadMenuItem.setVisible(false);
         Multipart multipart = new Multipart(this);
         File videoToUpload = new File(videoUri.toString());
-        videoToUpload.setExecutable(true);
-        videoToUpload.setReadable(true);
-        videoToUpload.setWritable(true);
-        multipart.addFile("video/mp4", "file", videoToUpload.getName() , videoUri);
+        multipart.addFile("video/mp4", "file", videoToUpload.getName(), videoUri);
+
         MultipartRequest request = multipart.getRequest(addVideoUrl, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 Log.d("UPLOAD_VIDEO", "SUCCESS");
+                uploadMenuItem.setVisible(true);
+                Toast.makeText(getApplicationContext(), "Video is succesvol geupload!", Toast.LENGTH_LONG).show();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("UPLOAD_VIDEO", "ERROR");
+                uploadMenuItem.setVisible(true);
+                Toast.makeText(getApplicationContext(), "Er is iets fout gegaan met het uploaden van de video!", Toast.LENGTH_LONG).show();
             }
         });
         ApiService.getInstance(getApplicationContext()).addToRequestQueue(request);
@@ -263,7 +276,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        Log.d("BUFFERING_VIDEO_", "%"+percent);
+        Log.d("BUFFERING_VIDEO_", "%" + percent);
     }
 
     @Override
@@ -272,6 +285,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
             mediaPlayer.setDisplay(holder);
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Er is iets mis gegaan met het laden van de video!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -289,9 +303,10 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         try {
-            if(mediaPlayer != null){
+            if (mediaPlayer != null) {
                 mediaPlayer.stop();
                 mediaPlayer.release();
+                mediaController.setEnabled(false);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -302,6 +317,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     @Override
     public void onCompletion(MediaPlayer mp) {
         mp.release();
+        mediaController.setEnabled(false);
     }
 
     @Override
@@ -315,7 +331,6 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
             }
         });
         mediaPlayer.start();
-
     }
 
     @Override
