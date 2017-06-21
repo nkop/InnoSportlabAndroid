@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.io.IOException;
+
 import nl.in12soa.sperovideo.Services.ActionBarService;
 import nl.in12soa.sperovideo.Services.CameraService;
 
@@ -21,6 +23,7 @@ public class CameraActivity extends AppCompatActivity implements WifiP2pManager.
     public WifiP2pManager wifiP2pManager;
     public WifiP2pManager.Channel channel;
     public CameraService cameraService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,5 +89,17 @@ public class CameraActivity extends AppCompatActivity implements WifiP2pManager.
     public void setFeedback(String feedback){
         TextView textviewFeedback = (TextView)findViewById(R.id.camera_feedback);
         textviewFeedback.setText(feedback);
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        cameraService.cleangroup();
+        cameraService.GROUPEXISTS = false;
+        try {
+            cameraService.serverService.serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

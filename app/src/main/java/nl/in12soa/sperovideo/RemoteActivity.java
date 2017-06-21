@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.nfc.NfcAdapter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -39,6 +41,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
     RecyclerView recyclerView;
     ClientService clientService;
     Boolean cameraSelected;
+    public Button btn_startcamera;
 
     public static final String PREFS = "CameraSettings";
     public SharedPreferences preferences;
@@ -53,8 +56,8 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
         setContentView(R.layout.activity_analyse);
         peerListAdapter = new PeerListAdapter(new ArrayList<Peer>(), this);
         preferences = getSharedPreferences(PREFS, 0);
-        (findViewById(R.id.start_camera_button)).setEnabled(false);
-
+        btn_startcamera = (Button)findViewById(R.id.start_camera_button);
+        btn_startcamera.setEnabled(false);
         setReceiver();
         setListeners();
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -89,13 +92,13 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                 broadcastReceiver.peerDiscovery();
             }
         });
-        (findViewById(R.id.start_camera_button)).setOnClickListener(new View.OnClickListener() {
+        btn_startcamera.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 if (cameraSelected) {
                     setFeedback(getString(R.string.video_recording), true, 0, false);
-                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", "24") + ", \"resolution_y\" : " + preferences.getString("ResolutionY", "480") + ", \"resolution_x\" : " + preferences.getString("resolutionX", "640") + ", \"duration\" : 10000 } }");
+                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", "24") + ", \"resolution_quality\" : " + preferences.getString("resolution_quality", "1") + ", \"duration\" : 10000, \"device_name\" : \"" + Build.MODEL + "\" } }");
                 }
             }
         });
@@ -165,13 +168,13 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
             mediaPlayer.setDataSource(getApplicationContext(), videoPath);
             mediaPlayer.prepare();
             mediaPlayer.setDisplay(surfaceHolder);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    peerListAdapter.empty();
-                }
-            });
-            disconnect();
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    peerListAdapter.empty();
+//                }
+//            });
+//            disconnect();
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
@@ -238,7 +241,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                 }
                 if (cameraSelected) {
                     setFeedback(getString(R.string.video_recording), true, 0, false);
-                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", "24") + ", \"resolution_y\" : " + preferences.getString("ResolutionY", "480") + ", \"resolution_x\" : " + preferences.getString("resolutionX", "640") + ", \"duration\" : 10000 } }");
+                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", "24") + ", \"resolution_quality\" : " + preferences.getString("resolution_quality", "1") + ", \"duration\" : 10000, \"device_name\" : \"" + Build.MODEL + "\" } }");
                 }
             }
 
