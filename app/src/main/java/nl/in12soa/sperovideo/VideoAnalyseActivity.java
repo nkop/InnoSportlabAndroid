@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -20,10 +21,13 @@ import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.bikomobile.multipart.Multipart;
+import com.bikomobile.multipart.MultipartRequest;
 
 import org.json.JSONObject;
 
@@ -34,7 +38,7 @@ import java.util.Map;
 import nl.in12soa.sperovideo.Services.ApiService;
 
 public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener,
-        MediaPlayer.OnVideoSizeChangedListener, SurfaceHolder.Callback, MediaController.MediaPlayerControl{
+        MediaPlayer.OnVideoSizeChangedListener, SurfaceHolder.Callback, MediaController.MediaPlayerControl {
 
     private MediaController mediaController;
     private String addTagUrl;
@@ -69,12 +73,9 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
         surfaceView.getHolder().addCallback(this);
 
-        if(filePath != null)
-        {
+        if (filePath != null) {
             videoUri = Uri.parse(filePath);
-        }
-        else
-        {
+        } else {
             String url = "https://innosportlab.herokuapp.com/videos/" + videoID + "/video";
             videoUri = Uri.parse(url);
             onlineVideo = true;
@@ -83,20 +84,24 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         initializeMediaPlayer();
     }
 
-    private void initializeMediaPlayer(){
+    private void initializeMediaPlayer() {
         mediaController = new MediaController(this);
-        if(onlineVideo){
-            try{
-                mediaPlayer = new MediaPlayer();
+        if (onlineVideo) {
+            try {
+                if(mediaPlayer == null){
+                    mediaPlayer = new MediaPlayer();
+                }
                 mediaPlayer.setDataSource(videoUri.toString());
                 mediaPlayer.prepare();
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else{
-            mediaPlayer = MediaPlayer.create(this, videoUri);
+        } else {
+            if(mediaPlayer == null){
+                mediaPlayer = MediaPlayer.create(this, videoUri);
+            }
         }
-        try{
+        try {
             mediaPlayer.setOnBufferingUpdateListener(this);
             mediaPlayer.setOnCompletionListener(this);
             mediaPlayer.setOnPreparedListener(this);
@@ -104,9 +109,9 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
             mediaPlayer.setOnVideoSizeChangedListener(this);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(Float.parseFloat(slowMotionRate)));
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            if(mediaPlayer != null){
+            if (mediaPlayer != null) {
                 mediaPlayer.stop();
                 mediaPlayer.release();
                 mediaController.hide();
@@ -115,64 +120,84 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         }
 
     }
+
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!getIntent().getStringExtra("id").equals("1"))
-            getMenuInflater().inflate(R.menu.menu_video, menu);
+        getMenuInflater().inflate(R.menu.menu_video, menu);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if(onlineVideo){
+        if (!onlineVideo) {
+            menu.findItem(R.id.comment_add).setVisible(false);
+            menu.findItem(R.id.tag_add).setVisible(false);
+        } else {
             menu.findItem(R.id.upload_video).setVisible(false);
         }
         return true;
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.tag_add:
                 createDialog("Tag").show();
-                return(true);
+                return (true);
             case R.id.comment_add:
                 createDialog("Comment").show();
-                return(true);
+                return (true);
             case R.id.upload_video:
                 uploadVideo();
-                return(true);
+                return (true);
         }
-        return(super.onOptionsItemSelected(item));
+        return (super.onOptionsItemSelected(item));
     }
 
-    public void uploadVideo(){
-        Map<String, File> params = new HashMap<>();
-        params.put("file", new File(videoPath));
-        //params.put("videoId", "591d867c2a9e2534342914b1");
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.POST, addVideoUrl, new JSONObject(params), new Response.Listener<JSONObject>() {
+    public void uploadVideo() {
+//        Map<String, File> params = new HashMap<>();
+//        File videoFile = new File(videoPath);
+//        params.put("file", videoFile);
+//        JsonObjectRequest request = new JsonObjectRequest(
+//                Request.Method.POST, addVideoUrl, new JSONObject(params), new Response.Listener<JSONObject>() {
+//            @Override
+//            public void onResponse(JSONObject response) {
+//                Toast.makeText(getApplicationContext(), R.string.video_uploaded, Toast.LENGTH_SHORT).show();
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Toast.makeText(getApplicationContext(), R.string.tag_fail, Toast.LENGTH_LONG).show();
+//            }
+//        }
+//        ){
+//            @Override
+//            public String getBodyContentType(){
+//                return "multipart/form-data;boundary=wtftest";
+//            }
+//        };
+
+        Multipart multipart = new Multipart(this);
+        File videoToUpload = new File(videoUri.toString());
+        multipart.addFile("video/mp4", "file", videoToUpload.getName() , videoUri);
+        MultipartRequest request = multipart.getRequest(addVideoUrl, new Response.Listener<NetworkResponse>() {
             @Override
-            public void onResponse(JSONObject response) {
-                Toast.makeText(getApplicationContext(), R.string.video_uploaded, Toast.LENGTH_SHORT).show();
+            public void onResponse(NetworkResponse response) {
+                Log.d("UPLOAD_VIDEO", "SUCCESS");
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), R.string.tag_fail, Toast.LENGTH_LONG).show();
+                Log.d("UPLOAD_VIDEO", "ERROR");
             }
-        }
-        );
+        });
         ApiService.getInstance(getApplicationContext()).addToRequestQueue(request);
     }
 
     public AlertDialog createDialog(String item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        if(item.equals("Tag"))
-        {
+        if (item.equals("Tag")) {
             builder.setTitle(R.string.add_tag);
-        }
-        else
-        {
+        } else {
             builder.setTitle(R.string.add_comment);
         }
 
@@ -185,8 +210,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         text.setLayoutParams(lp);
         builder.setView(text);
 
-        if(item.equals("Tag"))
-        {
+        if (item.equals("Tag")) {
             builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -213,9 +237,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
                     }
                 }
             });
-        }
-        else
-        {
+        } else {
             builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -263,10 +285,10 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        try{
+        try {
             mediaPlayer.setDisplay(holder);
             mediaPlayer.start();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -276,6 +298,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         mediaController.show();
         return false;
     }
+
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
@@ -283,10 +306,10 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        try{
+        try {
             mediaPlayer.stop();
             mediaPlayer.release();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -303,8 +326,8 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         mediaController.setAnchorView(surfaceView);
         mediaController.setEnabled(true);
 
-        handler.post(new Runnable(){
-            public void run(){
+        handler.post(new Runnable() {
+            public void run() {
                 mediaController.show();
             }
         });
