@@ -6,7 +6,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -38,6 +36,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
     private MediaController mediaController;
     private String addTagUrl;
+    private String addCommentUrl;
     private SurfaceView surfaceView;
     private MediaPlayer mediaPlayer;
     private Uri videoUri;
@@ -51,6 +50,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
 
         addTagUrl = "https://innosportlab.herokuapp.com/tags";
+        addCommentUrl = "https://innosportlab.herokuapp.com/comments";
         handler = new Handler();
         Intent intent = getIntent();
         String filePath = intent.getStringExtra("filePath");
@@ -95,51 +95,94 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.tag_add:
-                createDialog().show();
+                createDialog("Tag").show();
+                return(true);
+            case R.id.comment_add:
+                createDialog("Comment").show();
                 return(true);
         }
         return(super.onOptionsItemSelected(item));
     }
 
-    public AlertDialog createDialog() {
+    public AlertDialog createDialog(String item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle(R.string.add_tag);
+        if(item.equals("Tag"))
+        {
+            builder.setTitle(R.string.add_tag);
+        }
+        else
+        {
+            builder.setTitle(R.string.add_comment);
+        }
 
-        final EditText tagText = new EditText(this);
+
+        final EditText text = new EditText(this);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
         );
-        tagText.setLayoutParams(lp);
-        builder.setView(tagText);
+        text.setLayoutParams(lp);
+        builder.setView(text);
 
-        builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (tagText.getText().length() > 0) {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("tag", tagText.getText().toString());
-                    params.put("videoId", getIntent().getStringExtra("id"));
-                    //params.put("videoId", "591d867c2a9e2534342914b1");
-                    JsonObjectRequest request = new JsonObjectRequest(
-                            Request.Method.POST, addTagUrl, new JSONObject(params), new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Toast.makeText(getApplicationContext(), R.string.tag_success, Toast.LENGTH_SHORT).show();
+        if(item.equals("Tag"))
+        {
+            builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (text.getText().length() > 0) {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("tag", text.getText().toString());
+                        params.put("videoId", getIntent().getStringExtra("id"));
+                        //params.put("videoId", "591d867c2a9e2534342914b1");
+                        JsonObjectRequest request = new JsonObjectRequest(
+                                Request.Method.POST, addTagUrl, new JSONObject(params), new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Toast.makeText(getApplicationContext(), R.string.tag_success, Toast.LENGTH_SHORT).show();
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(getApplicationContext(), R.string.tag_fail, Toast.LENGTH_LONG).show();
+                            }
                         }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), R.string.tag_fail, Toast.LENGTH_LONG).show();
-                        }
+                        );
+                        ApiService.getInstance(getApplicationContext()).addToRequestQueue(request);
+
                     }
-                    );
-                    ApiService.getInstance(getApplicationContext()).addToRequestQueue(request);
-
                 }
-            }
-        });
+            });
+        }
+        else
+        {
+            builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (text.getText().length() > 0) {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("comment", text.getText().toString());
+                        params.put("videoId", getIntent().getStringExtra("id"));
+                        JsonObjectRequest request = new JsonObjectRequest(
+                                Request.Method.POST, addCommentUrl, new JSONObject(params), new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Toast.makeText(getApplicationContext(), R.string.comment_success, Toast.LENGTH_SHORT).show();
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(getApplicationContext(), R.string.comment_fail, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        );
+                        ApiService.getInstance(getApplicationContext()).addToRequestQueue(request);
+
+                    }
+                }
+            });
+        }
+
 
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
