@@ -14,6 +14,8 @@ import java.util.HashMap;
 import nl.in12soa.sperovideo.CameraActivity;
 import nl.in12soa.sperovideo.R;
 
+import static nl.in12soa.sperovideo.Services.ServerService.PORT;
+
 
 public class CameraService extends BroadcastReceiver {
 
@@ -22,16 +24,16 @@ public class CameraService extends BroadcastReceiver {
     private CameraActivity cameraActivity;
     public ServerService serverService;
     public WifiP2pDnsSdServiceInfo serviceInfo;
+    public static boolean GROUPEXISTS = false;
     public CameraService(WifiP2pManager manager, WifiP2pManager.Channel channel,
                          CameraActivity activity) {
         super();
         this.wifiP2pManager = manager;
         this.channel = channel;
         this.cameraActivity = activity;
-        cleangroup();
     }
 
-    private void cleangroup(){
+    public void cleangroup(){
         wifiP2pManager.removeGroup(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
@@ -64,48 +66,42 @@ public class CameraService extends BroadcastReceiver {
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
             if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
-                wifiP2pManager.createGroup(channel, new WifiP2pManager.ActionListener() {
-                    @Override
-                    public void onSuccess() {
-                        cameraActivity.setFeedback(cameraActivity.getString(R.string.camera_service_started));
-                        startRegistration();
-                        serverService = new ServerService(cameraActivity);
-                        serverService.execute();
-                    }
+                if(!GROUPEXISTS) {
+                    wifiP2pManager.createGroup(channel, new WifiP2pManager.ActionListener() {
+                        @Override
+                        public void onSuccess() {
+                            cameraActivity.setFeedback(cameraActivity.getString(R.string.camera_service_started));
+                            startRegistration();
+                            startServer();
+                        }
 
-                    @Override
-                    public void onFailure(int reason) {
-                        cameraActivity.setFeedback(cameraActivity.getString(R.string.camera_service_failed));
-                    }
-                });
+                        @Override
+                        public void onFailure(int reason) {
+                            cameraActivity.setFeedback(cameraActivity.getString(R.string.camera_service_failed));
+                        }
+                    });
+                }else{
+                    startServer();
+                }
             } else {
                 cameraActivity.setFeedback(cameraActivity.getString(R.string.wifi_direct_n_a));
             }
             System.out.println(action);
         } else if(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
-
-            WifiP2pDevice wifiP2pDevice = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
-            if(wifiP2pDevice != null) {
-                cameraActivity.setFeedback(cameraActivity.getResources().getString(R.string.connected, wifiP2pDevice.deviceName));
-            }
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
             //TODO Feedback
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
-            WifiP2pDevice wifiP2pDevice = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
-            if(wifiP2pDevice != null) {
-                if(!wifiP2pDevice.deviceName.equals(Settings.System.getString(cameraActivity.getContentResolver(), "device_name"))) {
-                    cameraActivity.setFeedback(cameraActivity.getResources().getString(R.string.connected, wifiP2pDevice.deviceName));
-                }
-            }
         }
     }
 
     private void startRegistration() {
         //  Create a string map containing information about your service.
         HashMap record = new HashMap();
+        PORT = (int) (Math.random() * 60535) + 5000;
+
         record.put("listenport", String.valueOf(5002));
-        record.put("service_id", "SperoCam_" + (int) (Math.random() * 1000));
-        record.put("service_type", "Camera" + (int) (Math.random() * 1000));
+        record.put("service_id", "SperoCam_" + PORT);
+        record.put("service_type", "Camera_" + PORT);
         record.put("available", "visible");
 
         // Service information.  Pass it an instance name, service type
@@ -120,6 +116,7 @@ public class CameraService extends BroadcastReceiver {
         wifiP2pManager.addLocalService(channel, serviceInfo, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
+                GROUPEXISTS = true;
                 cameraActivity.setFeedback(cameraActivity.getString(R.string.scan_chip_or_manual));
             }
 
@@ -144,6 +141,8 @@ public class CameraService extends BroadcastReceiver {
             }
         });
     }
-
-
+    private void startServer(){
+        serverService = new ServerService(cameraActivity);
+        serverService.execute();
+    }
 }
