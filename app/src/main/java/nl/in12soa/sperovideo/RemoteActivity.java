@@ -95,7 +95,16 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
             public void onClick(View v) {
                 if (cameraSelected) {
                     setFeedback(getString(R.string.video_recording), true, 0, false);
-                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", "24") + ", \"resolution_y\" : " + preferences.getString("ResolutionY", "480") + ", \"resolution_x\" : " + preferences.getString("resolutionX", "640") + ", \"duration\" : 10000 } }");
+                    clientService.sendData("{ " +
+                            "\"command\" : \"start_camera\"" +
+                            ", \"parameters\" : " +
+                            "{ " +
+                            "\"framerate\" : " + preferences.getString("fps", "24") + "" +
+                            ", \"resolution_y\" : " + preferences.getString("ResolutionY", "480") + "" +
+                            ", \"resolution_x\" : " + preferences.getString("resolutionX", "640") + "" +
+                            ", \"duration\" : 10000 " +
+                            "} " +
+                            "}");
                 }
             }
         });
@@ -238,7 +247,17 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                 }
                 if (cameraSelected) {
                     setFeedback(getString(R.string.video_recording), true, 0, false);
-                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", "24") + ", \"resolution_y\" : " + preferences.getString("ResolutionY", "480") + ", \"resolution_x\" : " + preferences.getString("resolutionX", "640") + ", \"duration\" : 10000 }, \"rfid\" : " + serialstring + " }");
+                    clientService.sendData("{ " +
+                            "\"command\" : \"start_camera\", " +
+                            "\"parameters\" : " +
+                            "{ " +
+                            "\"framerate\" : " + preferences.getString("fps", "24") + ", " +
+                            "\"resolution_y\" : " + preferences.getString("ResolutionY", "480") + ", " +
+                            "\"resolution_x\" : " + preferences.getString("resolutionX", "640") + ", " +
+                            "\"duration\" : 10000 " +
+                            "}, " +
+                            "\"rfid\" : " + serialstring +
+                            "}");
                 }
             }
 

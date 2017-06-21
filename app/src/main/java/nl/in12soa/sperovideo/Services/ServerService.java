@@ -89,8 +89,7 @@ public class ServerService extends AsyncTask<Void, Void, Void> {
                         }
                     }
                     ContentResolver cr = mActivity.getContentResolver();
-                    InputStream inputStream = null;
-                    inputStream = cr.openInputStream(VIDEOURI);
+                    InputStream inputStream = cr.openInputStream(VIDEOURI);
                     OutputStream outputStream = client.getOutputStream();
                     while ((len = inputStream.read(buf)) != -1) {
                         outputStream.write(buf, 0, len);
