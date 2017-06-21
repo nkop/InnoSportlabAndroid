@@ -93,7 +93,6 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
                 if(mediaPlayer == null){
                     mediaPlayer = new MediaPlayer();
                 }
-                mediaPlayer.reset();
                 mediaPlayer.setDataSource(videoUri.toString());
                 mediaPlayer.prepareAsync();
             } catch (Exception e) {
@@ -101,7 +100,6 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
             }
         } else {
             if(mediaPlayer == null){
-                mediaPlayer.reset();
                 mediaPlayer = MediaPlayer.create(this, videoUri);
             }
         }
@@ -159,6 +157,9 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     public void uploadVideo() {
         Multipart multipart = new Multipart(this);
         File videoToUpload = new File(videoUri.toString());
+        videoToUpload.setExecutable(true);
+        videoToUpload.setReadable(true);
+        videoToUpload.setWritable(true);
         multipart.addFile("video/mp4", "file", videoToUpload.getName() , videoUri);
         MultipartRequest request = multipart.getRequest(addVideoUrl, new Response.Listener<NetworkResponse>() {
             @Override
