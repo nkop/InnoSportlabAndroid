@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/upload_vid"
+        android:id="@+id/upload_video"
         android:title="Upload Video"
         app:showAsAction="always"
         android:icon="@drawable/ic_upload_black_24dp"
@@ -14,4 +14,12 @@
         app:showAsAction="always"
         android:icon="@drawable/ic_local_offer_black_24dp"
         />
+
+    <item
+        android:id="@+id/comment_add"
+        android:title="@string/add_comment"
+        app:showAsAction="always"
+        android:icon="@drawable/comment_icon"
+        />
+
 </menu>
