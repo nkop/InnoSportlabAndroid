@@ -32,6 +32,8 @@ import com.bikomobile.multipart.MultipartRequest;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -317,7 +319,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-
+        mp.release();
     }
 
     @Override
