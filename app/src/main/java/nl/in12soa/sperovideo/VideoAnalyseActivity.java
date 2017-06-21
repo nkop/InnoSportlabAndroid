@@ -28,6 +28,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bikomobile.multipart.Multipart;
 import com.bikomobile.multipart.MultipartRequest;
+import com.devbrackets.android.exomedia.listener.OnPreparedListener;
+import com.devbrackets.android.exomedia.ui.widget.VideoView;
 
 import org.json.JSONObject;
 
@@ -39,7 +41,7 @@ import java.util.Map;
 
 import nl.in12soa.sperovideo.Services.ApiService;
 
-public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener,
+public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener, OnPreparedListener,
         MediaPlayer.OnVideoSizeChangedListener, SurfaceHolder.Callback, MediaController.MediaPlayerControl {
 
     private MediaController mediaController;
@@ -53,18 +55,18 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     private String videoPath;
     private String slowMotionRate;
     boolean onlineVideo = false;
-
+    private VideoView videoView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_analyse);
 
-        surfaceView = (SurfaceView) findViewById(R.id.surface_view);
+//        surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         SharedPreferences localStorage = this.getSharedPreferences("SPEROVIDEO", 0);
         String userName = localStorage.getString("userName", null);
-        addVideoUrl = "https://innosportlab.herokuapp.com/videos/" + userName;
-        addTagUrl = "https://innosportlab.herokuapp.com/tags";
-        addCommentUrl = "https://innosportlab.herokuapp.com/comments";
+        addVideoUrl = "http://136.144.128.236:3001/videos/" + userName;
+        addTagUrl = "http://136.144.128.236:3001/tags";
+        addCommentUrl = "http://136.144.128.236:3001/comments";
         handler = new Handler();
         Intent intent = getIntent();
         String filePath = intent.getStringExtra("filePath");
@@ -73,12 +75,13 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 
         videoPath = filePath;
 
-        surfaceView.getHolder().addCallback(this);
+//        surfaceView.getHolder().addCallback(this);
 
         if (filePath != null) {
             videoUri = Uri.parse(filePath);
         } else {
-            String url = "https://innosportlab.herokuapp.com/videos/" + videoID + "/video";
+            String url = "http://136.144.128.236:3001/videos/" + videoID + "/video";
+            System.out.println(url);
             videoUri = Uri.parse(url);
             onlineVideo = true;
         }
@@ -87,41 +90,48 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     }
 
     private void initializeMediaPlayer() {
-        mediaController = new MediaController(this);
-        if (onlineVideo) {
-            try {
-                if(mediaPlayer == null){
-                    mediaPlayer = new MediaPlayer();
-                }
-                mediaPlayer.reset();
-                mediaPlayer.setDataSource(videoUri.toString());
-                mediaPlayer.prepareAsync();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            if(mediaPlayer == null){
-                mediaPlayer.reset();
-                mediaPlayer = MediaPlayer.create(this, videoUri);
-            }
-        }
-        try {
-            mediaPlayer.setOnBufferingUpdateListener(this);
-            mediaPlayer.setOnCompletionListener(this);
-            mediaPlayer.setOnPreparedListener(this);
-            mediaPlayer.setScreenOnWhilePlaying(true);
-            mediaPlayer.setOnVideoSizeChangedListener(this);
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(Float.parseFloat(slowMotionRate)));
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (mediaPlayer != null) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
-                mediaController.hide();
-                mediaController.setEnabled(false);
-            }
-        }
+        // Make sure to use the correct VideoView import
+        videoView = (VideoView)findViewById(R.id.video_view);
+        videoView.setOnPreparedListener(this);
+
+        //For now we just picked an arbitrary item to play
+        videoView.setVideoURI(videoUri);
+        videoView.setPlaybackSpeed(Float.parseFloat(slowMotionRate));
+//        mediaController = new MediaController(this);
+//        if (onlineVideo) {
+//            try {
+//                if(mediaPlayer == null){
+//                    mediaPlayer = new MediaPlayer();
+//                }
+//                mediaPlayer.reset();
+//                mediaPlayer.setDataSource(videoUri.toString());
+//                mediaPlayer.prepareAsync();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            if(mediaPlayer == null){
+//                mediaPlayer.reset();
+//                mediaPlayer = MediaPlayer.create(this, videoUri);
+//            }
+//        }
+//        try {
+//            mediaPlayer.setOnBufferingUpdateListener(this);
+//            mediaPlayer.setOnCompletionListener(this);
+//            mediaPlayer.setOnPreparedListener(this);
+//            mediaPlayer.setScreenOnWhilePlaying(true);
+//            mediaPlayer.setOnVideoSizeChangedListener(this);
+//            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//            mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(Float.parseFloat(slowMotionRate)));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            if (mediaPlayer != null) {
+//                mediaPlayer.stop();
+//                mediaPlayer.release();
+//                mediaController.hide();
+//                mediaController.setEnabled(false);
+//            }
+//        }
 
     }
 
@@ -304,17 +314,17 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     }
 
     @Override
-    public void onPrepared(MediaPlayer mp) {
-        mediaController.setMediaPlayer(this);
-        mediaController.setAnchorView(surfaceView);
-        mediaController.setEnabled(true);
-        handler.post(new Runnable() {
-            public void run() {
-                mediaController.show();
-            }
-        });
-        mediaPlayer.start();
-
+    public void onPrepared() {
+//        mediaController.setMediaPlayer(this);
+//        mediaController.setAnchorView(surfaceView);
+//        mediaController.setEnabled(true);
+//        handler.post(new Runnable() {
+//            public void run() {
+//                mediaController.show();
+//            }
+//        });
+//        mediaPlayer.start();\
+        videoView.start();
     }
 
     @Override
