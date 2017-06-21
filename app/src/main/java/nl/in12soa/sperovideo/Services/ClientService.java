@@ -19,22 +19,24 @@ import java.net.Socket;
 import nl.in12soa.sperovideo.R;
 import nl.in12soa.sperovideo.RemoteActivity;
 
+import static nl.in12soa.sperovideo.Services.ServerService.PORT;
+
 /**
  * Created by Ahmad on 3/10/2017.
  */
 
 public class ClientService{
 
+    private RemoteActivity mActivity;
     private Context mContext;
     private static String host;
-    private int port;
     private Socket socket;
+    private int port;
     private String data;
     private String rfid;
 
-    public ClientService(Context ctxp){
-        mContext = ctxp;
-        port = 8888;
+    public ClientService(Context context){
+        mContext = context;
     }
 
     public static void setHost(String hostp){
@@ -51,6 +53,7 @@ public class ClientService{
             e.printStackTrace();
         }
         new DataSender().execute();
+        port = 8888;
     }
 
     private class DataSender extends AsyncTask<Void,Void,Void>{
@@ -63,7 +66,6 @@ public class ClientService{
                  * port, and timeout information.
                  */
                 socket = new Socket();
-                socket.setReuseAddress(true);
                 socket.bind(null);
                 socket.connect((new InetSocketAddress(host, port)), 1024);
                 /**
@@ -97,6 +99,8 @@ public class ClientService{
 
     private void copyInputStreamToFile(InputStream in, File f) {
         try {
+            setBtnStartCameraEnabled(false);
+
             FileOutputStream fileOutputStream = new FileOutputStream(f);
             byte[] buf = new byte[1024];
             int len;
@@ -111,8 +115,18 @@ public class ClientService{
             f.setReadable(true, false);
             f.setExecutable(true, false);
             ((RemoteActivity)mContext).playVideo(Uri.fromFile(f));
+            setBtnStartCameraEnabled(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void setBtnStartCameraEnabled(final boolean enabled){
+        ((RemoteActivity)mContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((RemoteActivity)mContext).btn_startcamera.setEnabled(enabled);
+            }
+        });
     }
 }

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import nl.in12soa.sperovideo.Models.Peer;
+import nl.in12soa.sperovideo.Services.ServerService;
 
 /**
  * Created by ahmadrahimi on 5/11/17.
@@ -65,6 +66,8 @@ public class PeerListAdapter extends RecyclerView.Adapter<PeerListAdapter.PeerVi
             @Override
             public void onClick(View v) {
                 Peer peer = peerList.get(index);
+                int port = Integer.parseInt(peer.getName().replace("SperoCam_", ""));
+                ServerService.PORT = port;
                 remoteActivity.broadcastReceiver.connect(peer.getDevice());
             }
         });
