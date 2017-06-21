@@ -98,7 +98,7 @@ public class OverviewFragment extends Fragment {
                 });
                 if (videoLocalArray != null) {
                     for (int i = 0; i < videoLocalArray.length; i++) {
-                        Video video = new Video(videoLocalArray[i].getName(), videoLocalArray[i].getAbsolutePath(), null, null);
+                        Video video = new Video("1", videoLocalArray[i].getAbsolutePath(), null, null);
                         videoArray.add(video);
                     }
                 } else {
