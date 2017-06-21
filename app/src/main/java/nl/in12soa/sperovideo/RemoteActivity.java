@@ -244,7 +244,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                 }
                 if (cameraSelected) {
                     setFeedback(getString(R.string.video_recording), true, 0, false);
-                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", "24") + ", \"resolution_quality\" : " + preferences.getString("resolution_quality", "1") + ", \"duration\" : 10000, \"device_name\" : \"" + Build.MODEL + "\" } }");
+                    clientService.sendData("{ \"command\" : \"start_camera\", \"parameters\" : { \"framerate\" : " + preferences.getString("fps", "24") + ", \"resolution_quality\" : " + preferences.getString("resolution_quality", "1") + ", \"duration\" : 10000, \"rfid\" : " + serialstring + ", \"device_name\" : \"" + Build.MODEL + "\" } }");
                 }
             }
 
