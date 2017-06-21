@@ -16,6 +16,8 @@ import java.net.Socket;
 import nl.in12soa.sperovideo.R;
 import nl.in12soa.sperovideo.RemoteActivity;
 
+import static nl.in12soa.sperovideo.Services.ServerService.PORT;
+
 /**
  * Created by Ahmad on 3/10/2017.
  */
@@ -25,13 +27,12 @@ public class ClientService{
     private RemoteActivity mActivity;
     private Context mContext;
     private static String host;
-    private int port;
     private Socket socket;
+    private int port;
     private String data;
 
     public ClientService(Context context){
         mContext = context;
-        port = 8888;
     }
 
     public static void setHost(String hostp){
@@ -40,6 +41,7 @@ public class ClientService{
     public void sendData(String datap){
         data = datap;
         new DataSender().execute();
+        port = 8888;
     }
 
     private class DataSender extends AsyncTask<Void,Void,Void>{
@@ -52,7 +54,6 @@ public class ClientService{
                  * port, and timeout information.
                  */
                 socket = new Socket();
-                socket.setReuseAddress(true);
                 socket.bind(null);
                 socket.connect((new InetSocketAddress(host, port)), 1024);
                 /**

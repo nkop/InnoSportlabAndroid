@@ -98,6 +98,7 @@ public class CameraActivity extends AppCompatActivity implements WifiP2pManager.
         cameraService.GROUPEXISTS = false;
         try {
             cameraService.serverService.serverSocket.close();
+            cameraService.serverService.cancel(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

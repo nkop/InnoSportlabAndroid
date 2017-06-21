@@ -59,14 +59,14 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
         btn_startcamera = (Button)findViewById(R.id.start_camera_button);
         btn_startcamera.setEnabled(false);
         setReceiver();
+        recyclerView = (RecyclerView) findViewById(R.id.rv_peerlist);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(peerListAdapter);
         setListeners();
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         ActionBarService.setActionBarTitle(R.string.remote, getSupportActionBar());
         cameraSelected = false;
         surfaceHolder = ((SurfaceView) findViewById(R.id.surface_view)).getHolder();
-        recyclerView = (RecyclerView) findViewById(R.id.rv_peerlist);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(peerListAdapter);
         clientService = new ClientService(this);
 
 
@@ -84,14 +84,23 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
     }
 
     private void setListeners() {
-        (findViewById(R.id.refresh_button)).setOnClickListener(new View.OnClickListener() {
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onClick(View v) {
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
                 setFeedback(getString(R.string.searching_camera), true, 5000, true);
                 refreshPressed = true;
                 broadcastReceiver.peerDiscovery();
             }
+
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+            }
         });
+
         btn_startcamera.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -168,13 +177,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
             mediaPlayer.setDataSource(getApplicationContext(), videoPath);
             mediaPlayer.prepare();
             mediaPlayer.setDisplay(surfaceHolder);
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    peerListAdapter.empty();
-//                }
-//            });
-//            disconnect();
+
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {

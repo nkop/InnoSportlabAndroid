@@ -29,6 +29,7 @@ public class ServerService extends AsyncTask<Void, Void, Void> {
 
     private CameraActivity mActivity;
     public ServerSocket serverSocket;
+    public static int PORT;
     private static final int CAMERA_RESULT = 5;
     private HashMap<String, Socket> clientmap;
     public static Uri VIDEOURI;
@@ -37,7 +38,6 @@ public class ServerService extends AsyncTask<Void, Void, Void> {
         clientmap = new HashMap<>();
         try {
             serverSocket = new ServerSocket();
-            serverSocket.setReuseAddress(true);
             serverSocket.bind(new InetSocketAddress(8888));
         }catch (IOException e){
             e.printStackTrace();

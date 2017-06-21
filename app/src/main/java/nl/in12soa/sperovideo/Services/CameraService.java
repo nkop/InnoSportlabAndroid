@@ -14,6 +14,8 @@ import java.util.HashMap;
 import nl.in12soa.sperovideo.CameraActivity;
 import nl.in12soa.sperovideo.R;
 
+import static nl.in12soa.sperovideo.Services.ServerService.PORT;
+
 
 public class CameraService extends BroadcastReceiver {
 
@@ -95,9 +97,11 @@ public class CameraService extends BroadcastReceiver {
     private void startRegistration() {
         //  Create a string map containing information about your service.
         HashMap record = new HashMap();
+        PORT = (int) (Math.random() * 60535) + 5000;
+
         record.put("listenport", String.valueOf(5002));
-        record.put("service_id", "SperoCam_" + (int) (Math.random() * 1000));
-        record.put("service_type", "Camera" + (int) (Math.random() * 1000));
+        record.put("service_id", "SperoCam_" + PORT);
+        record.put("service_type", "Camera_" + PORT);
         record.put("available", "visible");
 
         // Service information.  Pass it an instance name, service type
