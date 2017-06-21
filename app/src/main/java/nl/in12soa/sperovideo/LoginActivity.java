@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private Map<String, String> params = new HashMap<>();
 
-    public static String loginURL = "http://innosportlab.herokuapp.com/users/validate";
+    public static String loginURL = "http://136.144.128.236:3001/users/validate";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

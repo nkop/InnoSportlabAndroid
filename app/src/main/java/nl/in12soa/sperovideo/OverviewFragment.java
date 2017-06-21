@@ -55,7 +55,7 @@ public class OverviewFragment extends Fragment {
             userID = sharedPreferences.getString("id", null);
         }
 
-        getVideosURL = "http://innosportlab.herokuapp.com/users/" + userID + "/videos";
+        getVideosURL = "http://136.144.128.236:3001/users/" + userID + "/videos";
         getVideos();
 
         return view;
