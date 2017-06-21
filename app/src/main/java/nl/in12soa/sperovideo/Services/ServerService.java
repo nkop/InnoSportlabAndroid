@@ -70,8 +70,7 @@ public class ServerService extends AsyncTask<Void, Void, Void> {
                         public void run() {
                             Intent intent = new Intent(mActivity, CameraViewActivity.class);
                             try {
-                                intent.putExtra("resolution_y",command.getJSONObject("parameters").getInt("resolution_y"));
-                                intent.putExtra("resolution_x",command.getJSONObject("parameters").getInt("resolution_x"));
+                                intent.putExtra("resolution_quality",command.getJSONObject("parameters").getInt("resolution_quality"));
                                 intent.putExtra("framerate", command.getJSONObject("parameters").getInt("framerate"));
                                 intent.putExtra("duration", command.getJSONObject("parameters").getInt("duration"));
                             } catch (JSONException e) {

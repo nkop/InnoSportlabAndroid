@@ -99,9 +99,8 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                             "\"command\" : \"start_camera\"" +
                             ", \"parameters\" : " +
                             "{ " +
-                            "\"framerate\" : " + preferences.getString("fps", "24") + "" +
-                            ", \"resolution_y\" : " + preferences.getString("ResolutionY", "480") + "" +
-                            ", \"resolution_x\" : " + preferences.getString("resolutionX", "640") + "" +
+                            "\"framerate\" : " + preferences.getString("fps", "24") + ", " +
+                            "\"resolution_quality\" : " + preferences.getString("resolution_quality", "1") + ", " +
                             ", \"duration\" : 10000 " +
                             "} " +
                             "}");
@@ -252,8 +251,7 @@ public class RemoteActivity extends AppCompatActivity implements WifiP2pManager.
                             "\"parameters\" : " +
                             "{ " +
                             "\"framerate\" : " + preferences.getString("fps", "24") + ", " +
-                            "\"resolution_y\" : " + preferences.getString("ResolutionY", "480") + ", " +
-                            "\"resolution_x\" : " + preferences.getString("resolutionX", "640") + ", " +
+                            "\"resolution_quality\" : " + preferences.getString("resolution_quality", "1") + ", " +
                             "\"duration\" : 10000 " +
                             "}, " +
                             "\"rfid\" : " + serialstring +

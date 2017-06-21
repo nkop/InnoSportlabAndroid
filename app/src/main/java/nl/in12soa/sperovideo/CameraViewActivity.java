@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import nl.in12soa.sperovideo.Services.ServerService;
 
@@ -57,8 +58,7 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         surfaceHolder.addCallback(this);
         videoSettings = new HashMap<>();
         Bundle extras = getIntent().getExtras();
-        videoSettings.put("resolution_y", extras.getInt("resultion_y"));
-        videoSettings.put("resolution_x", extras.getInt("resultion_x"));
+        videoSettings.put("resolution_quality", extras.getInt("resolution_quality"));
         videoSettings.put("framerate", extras.getInt("framerate"));
         videoSettings.put("duration", extras.getInt("duration"));
     }
@@ -98,14 +98,26 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         mediaRecorder.setMaxDuration(videoSettings.get("duration"));
         mediaRecorder.setOnInfoListener(this);
 
+
+
         //settings
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+        Camera.Size size = translateVideoSize(videoSettings.get("resolution_quality"));
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-//        mMediarecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-//        mMediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-//        mMediarecorder.setVideoFrameRate(videoSettings.get("framerate"));
-//        mMediarecorder.setVideoSize(videoSettings.get("resolution_y"),videoSettings.get("resolution_x"));
-        mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setVideoSize(size.width, size.height);
+//        mediaRecorder.setVideoFrameRate(20);
+//        mediaRecorder.setVideoEncodingBitRate(3000000);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+        mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+
+//        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+//        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+////        mMediarecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+////        mMediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+////        mMediarecorder.setVideoFrameRate(videoSettings.get("framerate"));
+////        mMediarecorder.setVideoSize(videoSettings.get("resolution_y"),videoSettings.get("resolution_x"));
+//        mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
 
         // Step 4: Set output file
         String filepath = getOutputMediaFile().getAbsolutePath();
@@ -196,6 +208,20 @@ public class CameraViewActivity extends AppCompatActivity implements SurfaceHold
         }
     }
 
+    private Camera.Size translateVideoSize(int size){
+        List<Camera.Size> videoSizes = camera.getParameters().getSupportedVideoSizes();
+        switch(size){
+            case 0:
+                return videoSizes.get(0);
+            case 1:
+                return videoSizes.get(videoSizes.size()/2);
+            case 2:
+                return videoSizes.get(videoSizes.size()-1);
+            default:
+                return videoSizes.get(0);
+        }
+
+    }
 
 
 
