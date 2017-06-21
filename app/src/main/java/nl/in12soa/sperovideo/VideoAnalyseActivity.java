@@ -95,12 +95,13 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
                 }
                 mediaPlayer.reset();
                 mediaPlayer.setDataSource(videoUri.toString());
-                mediaPlayer.prepare();
+                mediaPlayer.prepareAsync();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             if(mediaPlayer == null){
+                mediaPlayer.reset();
                 mediaPlayer = MediaPlayer.create(this, videoUri);
             }
         }
@@ -268,7 +269,6 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     public void surfaceCreated(SurfaceHolder holder) {
         try {
             mediaPlayer.setDisplay(holder);
-            mediaPlayer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -288,7 +288,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         try {
-            if(mediaPlayer.isPlaying() && mediaPlayer != null){
+            if(mediaPlayer != null){
                 mediaPlayer.stop();
                 mediaPlayer.release();
             }
@@ -308,12 +308,12 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
         mediaController.setMediaPlayer(this);
         mediaController.setAnchorView(surfaceView);
         mediaController.setEnabled(true);
-
         handler.post(new Runnable() {
             public void run() {
                 mediaController.show();
             }
         });
+        mediaPlayer.start();
 
     }
 
