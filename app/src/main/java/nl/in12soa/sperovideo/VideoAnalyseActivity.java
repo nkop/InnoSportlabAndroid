@@ -70,7 +70,7 @@ public class VideoAnalyseActivity extends AppCompatActivity implements MediaPlay
 //        surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         SharedPreferences localStorage = this.getSharedPreferences("SPEROVIDEO", 0);
         String userName = localStorage.getString("userName", null);
-        addVideoUrl = "http://innosportlab.herokuapp.com/videos/" + userName;
+        addVideoUrl = "http://136.144.128.236:3001/videos/" + userName;
         addTagUrl = "http://136.144.128.236:3001/tags";
         addCommentUrl = "http://136.144.128.236:3001/comments";
         handler = new Handler();
