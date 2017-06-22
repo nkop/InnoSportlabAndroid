@@ -61,7 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Map<String, String> params = new HashMap<>();
 
     //Url to post the user to
-    private String validateSignupURL = "https://innosportlab.herokuapp.com/users/validateSignup";
+    private String validateSignupURL = "http://136.144.128.236:3001/users/validateSignup";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
